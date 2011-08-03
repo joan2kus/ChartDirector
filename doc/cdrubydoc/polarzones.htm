@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<Title>Circular Zones</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Circular Zones</p>
+<hr class="separator">
+<div class="content">
+<img src="images/polarzones.png">
+<br><br>
+This example demonstrates adding circular zones to a polar chart.<br><br>
+In ChartDirector, a zone defined on the radial axis will mark a radius range, and so will appear as ring on a polar chart.<br><br>
+This example contains three circular zones in the plot area background, colored as red, green and blue. The blue region is the original background of the plot area, while the red and green regions are added using <a href="Axis.addZone.htm">Axis.addZone</a> of the radial axis object.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/polarzones_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class PolarzonesController &lt; ApplicationController
+
+    def index()
+        @title = "Circular Zones"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data = [51, 15, 51, 40, 17, 87, 94, 21, 35, 88, 50, 60]
+
+        # The labels for the chart
+        labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct",
+            "Nov", "Dec"]
+
+        # Create a PolarChart object of size 400 x 420 pixels
+        c = ChartDirector::PolarChart.new(400, 420)
+
+        # Set background color to a 2 pixel pattern color, with a black border and 1 pixel
+        # 3D border effect
+        c.setBackground(c.patternColor([0xffffff, 0xe0e0e0], 2), 0, 1)
+
+        # Add a title to the chart using 16 pts Arial Bold Italic font. The title text is
+        # white (0xffffff) on 2 pixel pattern background
+        c.addTitle("Chemical Concentration", "arialbi.ttf", 16, 0xffffff).setBackground(
+            c.patternColor([0x000000, 0x000080], 2))
+
+        # Set center of plot area at (200, 240) with radius 145 pixels. Set background
+        # color to blue (9999ff)
+        c.setPlotArea(200, 240, 145, 0x9999ff)
+
+        # Color the region between radius = 40 to 80 as green (99ff99)
+        c.radialAxis().addZone(40, 80, 0x99ff99)
+
+        # Color the region with radius &gt; 80 as red (ff9999)
+        c.radialAxis().addZone(80, 999, 0xff9999)
+
+        # Set the grid style to circular grid
+        c.setGridStyle(false)
+
+        # Set the radial axis label format
+        c.radialAxis().setLabelFormat("{value} ppm")
+
+        # Use semi-transparent (40ffffff) label background so as not to block the data
+        c.radialAxis().setLabelStyle().setBackground(0x40ffffff, 0x40000000)
+
+        # Add a legend box at (200, 30) top center aligned, using 9 pts Arial Bold font.
+        # with a black border.
+        legendBox = c.addLegend(200, 30, false, "arialbd.ttf", 9)
+        legendBox.setAlignment(ChartDirector::TopCenter)
+
+        # Add legend keys to represent the red/green/blue zones
+        legendBox.addKey("Under-Absorp", 0x9999ff)
+        legendBox.addKey("Normal", 0x99ff99)
+        legendBox.addKey("Over-Absorp", 0xff9999)
+
+        # Add a blue (000080) spline line layer with line width set to 3 pixels and using
+        # yellow (ffff00) circles to represent the data points
+        layer = c.addSplineLineLayer(data, 0x000080)
+        layer.setLineWidth(3)
+        layer.setDataSymbol(ChartDirector::CircleShape, 11, 0xffff00)
+
+        # Set the labels to the angular axis as spokes.
+        c.angularAxis().setLabels(labels)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/polarzones.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the chart
+data = [51, 15, 51, 40, 17, 87, 94, 21, 35, 88, 50, 60]
+
+# The labels for the chart
+labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct",
+    "Nov", "Dec"]
+
+# Create a PolarChart object of size 400 x 420 pixels
+c = ChartDirector::PolarChart.new(400, 420)
+
+# Set background color to a 2 pixel pattern color, with a black border and 1 pixel 3D
+# border effect
+c.setBackground(c.patternColor([0xffffff, 0xe0e0e0], 2), 0, 1)
+
+# Add a title to the chart using 16 pts Arial Bold Italic font. The title text is
+# white (0xffffff) on 2 pixel pattern background
+c.addTitle("Chemical Concentration", "arialbi.ttf", 16, 0xffffff).setBackground(
+    c.patternColor([0x000000, 0x000080], 2))
+
+# Set center of plot area at (200, 240) with radius 145 pixels. Set background color
+# to blue (9999ff)
+c.setPlotArea(200, 240, 145, 0x9999ff)
+
+# Color the region between radius = 40 to 80 as green (99ff99)
+c.radialAxis().addZone(40, 80, 0x99ff99)
+
+# Color the region with radius &gt; 80 as red (ff9999)
+c.radialAxis().addZone(80, 999, 0xff9999)
+
+# Set the grid style to circular grid
+c.setGridStyle(false)
+
+# Set the radial axis label format
+c.radialAxis().setLabelFormat("{value} ppm")
+
+# Use semi-transparent (40ffffff) label background so as not to block the data
+c.radialAxis().setLabelStyle().setBackground(0x40ffffff, 0x40000000)
+
+# Add a legend box at (200, 30) top center aligned, using 9 pts Arial Bold font. with
+# a black border.
+legendBox = c.addLegend(200, 30, false, "arialbd.ttf", 9)
+legendBox.setAlignment(ChartDirector::TopCenter)
+
+# Add legend keys to represent the red/green/blue zones
+legendBox.addKey("Under-Absorp", 0x9999ff)
+legendBox.addKey("Normal", 0x99ff99)
+legendBox.addKey("Over-Absorp", 0xff9999)
+
+# Add a blue (000080) spline line layer with line width set to 3 pixels and using
+# yellow (ffff00) circles to represent the data points
+layer = c.addSplineLineLayer(data, 0x000080)
+layer.setLineWidth(3)
+layer.setDataSymbol(ChartDirector::CircleShape, 11, 0xffff00)
+
+# Set the labels to the angular axis as spokes.
+c.angularAxis().setLabels(labels)
+
+# Output the chart
+c.makeChart("polarzones.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

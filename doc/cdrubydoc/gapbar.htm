@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<Title>Bar Gap</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Bar Gap</p>
+<hr class="separator">
+<div class="content">
+<img src="images/gapbar0.png">&nbsp;&nbsp;<img src="images/gapbar1.png">&nbsp;&nbsp;<img src="images/gapbar2.png">&nbsp;&nbsp;<img src="images/gapbar3.png">&nbsp;&nbsp;<img src="images/gapbar4.png">&nbsp;&nbsp;<img src="images/gapbar5.png">
+<br><br>
+This example demonstrates the effects of different bar gaps configured using <a href="BarLayer.setBarGap.htm">BarLayer.setBarGap</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/gapbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class GapbarController &lt; ApplicationController
+
+    def index()
+        @title = "Bar Gap"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 6
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        bargap = (params["img"]).to_i * 0.25 - 0.25
+
+        # The data for the bar chart
+        data = [100, 125, 245, 147, 67]
+
+        # The labels for the bar chart
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 150 x 150 pixels
+        c = ChartDirector::XYChart.new(150, 150)
+
+        # Set the plotarea at (27, 20) and of size 120 x 100 pixels
+        c.setPlotArea(27, 20, 120, 100)
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        if bargap &gt;= 0
+            # Add a title to display to bar gap using 8 pts Arial font
+            c.addTitle(sprintf("      Bar Gap = %s", bargap), "arial.ttf", 8)
+        else
+            # Use negative value to mean TouchBar
+            c.addTitle("      Bar Gap = TouchBar", "arial.ttf", 8)
+            bargap = ChartDirector::TouchBar
+        end
+
+        # Add a bar chart layer using the given data and set the bar gap
+        c.addBarLayer(data).setBarGap(bargap)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/gapbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    bargap = img.to_i * 0.25 - 0.25
+
+    # The data for the bar chart
+    data = [100, 125, 245, 147, 67]
+
+    # The labels for the bar chart
+    labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+    # Create a XYChart object of size 150 x 150 pixels
+    c = ChartDirector::XYChart.new(150, 150)
+
+    # Set the plotarea at (27, 20) and of size 120 x 100 pixels
+    c.setPlotArea(27, 20, 120, 100)
+
+    # Set the labels on the x axis
+    c.xAxis().setLabels(labels)
+
+    if bargap &gt;= 0
+        # Add a title to display to bar gap using 8 pts Arial font
+        c.addTitle(sprintf("      Bar Gap = %s", bargap), "arial.ttf", 8)
+    else
+        # Use negative value to mean TouchBar
+        c.addTitle("      Bar Gap = TouchBar", "arial.ttf", 8)
+        bargap = ChartDirector::TouchBar
+    end
+
+    # Add a bar chart layer using the given data and set the bar gap
+    c.addBarLayer(data).setBarGap(bargap)
+
+    # Output the chart
+    c.makeChart("gapbar%s.png" % img)
+end
+
+createChart("0")
+createChart("1")
+createChart("2")
+createChart("3")
+createChart("4")
+createChart("5")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

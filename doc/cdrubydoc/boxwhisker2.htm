@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<Title>Horizontal Box-Whisker Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Horizontal Box-Whisker Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/boxwhisker2.png">
+<br><br>
+This example demonstrates creating a multi-color horizontal box-whisker chart.<br><br>
+<a href="XYChart.addBoxWhiskerLayer2.htm">XYChart.addBoxWhiskerLayer2</a> is used to create the multi-color box-whisker layer. The chart is set to horizontal orientation using <a href="XYChart.swapXY.htm">XYChart.swapXY</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/boxwhisker2_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class Boxwhisker2Controller &lt; ApplicationController
+
+    def index()
+        @title = "Horizontal Box-Whisker Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # Sample data for the Box-Whisker chart. Represents the minimum, 1st quartile,
+        # medium, 3rd quartile and maximum values of some quantities
+        q0Data = [40, 45, 35]
+        q1Data = [55, 60, 50]
+        q2Data = [62, 70, 60]
+        q3Data = [70, 80, 65]
+        q4Data = [80, 90, 75]
+
+        # The labels for the chart
+        labels = ["&lt;*img=robot1.png*&gt;&lt;*br*&gt;Bipedal Type",
+            "&lt;*img=robot2.png*&gt;&lt;*br*&gt;Wolf Type", "&lt;*img=robot5.png*&gt;&lt;*br*&gt;Bird Type"]
+
+        # Create a XYChart object of size 540 x 320 pixels
+        c = ChartDirector::XYChart.new(540, 320)
+
+        # swap the x and y axes to create a horizontal box-whisker chart
+        c.swapXY()
+
+        # Set directory for loading images to current script directory
+        c.setSearchPath(File.dirname(__FILE__))
+
+        # Set the plotarea at (75, 25) and of size 440 x 270 pixels. Enable both
+        # horizontal and vertical grids by setting their colors to grey (0xc0c0c0)
+        c.setPlotArea(75, 25, 440, 270).setGridColor(0xc0c0c0, 0xc0c0c0)
+
+        # Add a title to the chart
+        c.addTitle("           Robot Shooting Accuracy Scores")
+
+        # Set the labels on the x axis and the font to Arial Bold
+        c.xAxis().setLabels(labels).setFontStyle("arialbd.ttf")
+
+        # Disable x axis ticks by setting the length to 0
+        c.xAxis().setTickLength(0)
+
+        # Set the font for the y axis labels to Arial Bold
+        c.yAxis().setLabelStyle("arialbd.ttf")
+
+        # Add a Box Whisker layer using light blue 0x9999ff as the fill color and blue
+        # (0xcc) as the line color. Set the line width to 2 pixels
+        c.addBoxWhiskerLayer2(q3Data, q1Data, q4Data, q0Data, q2Data).setLineWidth(2)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/boxwhisker2.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# Sample data for the Box-Whisker chart. Represents the minimum, 1st quartile,
+# medium, 3rd quartile and maximum values of some quantities
+q0Data = [40, 45, 35]
+q1Data = [55, 60, 50]
+q2Data = [62, 70, 60]
+q3Data = [70, 80, 65]
+q4Data = [80, 90, 75]
+
+# The labels for the chart
+labels = ["&lt;*img=robot1.png*&gt;&lt;*br*&gt;Bipedal Type",
+    "&lt;*img=robot2.png*&gt;&lt;*br*&gt;Wolf Type", "&lt;*img=robot5.png*&gt;&lt;*br*&gt;Bird Type"]
+
+# Create a XYChart object of size 540 x 320 pixels
+c = ChartDirector::XYChart.new(540, 320)
+
+# swap the x and y axes to create a horizontal box-whisker chart
+c.swapXY()
+
+# Set the plotarea at (75, 25) and of size 440 x 270 pixels. Enable both horizontal
+# and vertical grids by setting their colors to grey (0xc0c0c0)
+c.setPlotArea(75, 25, 440, 270).setGridColor(0xc0c0c0, 0xc0c0c0)
+
+# Add a title to the chart
+c.addTitle("           Robot Shooting Accuracy Scores")
+
+# Set the labels on the x axis and the font to Arial Bold
+c.xAxis().setLabels(labels).setFontStyle("arialbd.ttf")
+
+# Disable x axis ticks by setting the length to 0
+c.xAxis().setTickLength(0)
+
+# Set the font for the y axis labels to Arial Bold
+c.yAxis().setLabelStyle("arialbd.ttf")
+
+# Add a Box Whisker layer using light blue 0x9999ff as the fill color and blue (0xcc)
+# as the line color. Set the line width to 2 pixels
+c.addBoxWhiskerLayer2(q3Data, q1Data, q4Data, q0Data, q2Data).setLineWidth(2)
+
+# Output the chart
+c.makeChart("boxwhisker2.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,141 @@
+<HTML>
+<HEAD>
+<Title>Cylinder Bar Shape</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Cylinder Bar Shape</p>
+<hr class="separator">
+<div class="content">
+<img src="images/cylinderbar.png">
+<br><br>
+This example demonstrates bars of cylinder shape.<br><br>
+ChartDirector supports bars in cylindrical or arbitrary polygonal shapes. The shape are specified using <a href="BarLayer.setBarShape.htm">BarLayer.setBarShape</a> or <a href="BarLayer.setBarShape2.htm">BarLayer.setBarShape2</a>. In this example, the cylindrical shape is illustrated.<br><br>
+See <a href="shapespec.htm">Shape Specification</a> on how built-in and custom shapes are defined in ChartDirector.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/cylinderbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class CylinderbarController &lt; ApplicationController
+
+    def index()
+        @title = "Cylinder Bar Shape"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data = [85, 156, 179.5, 211, 123]
+
+        # The labels for the bar chart
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 400 x 240 pixels.
+        c = ChartDirector::XYChart.new(400, 240)
+
+        # Add a title to the chart using 14 pts Times Bold Italic font
+        c.addTitle("Weekly Server Load", "timesbi.ttf", 14)
+
+        # Set the plotarea at (45, 40) and of 300 x 160 pixels in size. Use alternating
+        # light grey (f8f8f8) / white (ffffff) background.
+        c.setPlotArea(45, 40, 300, 160, 0xf8f8f8, 0xffffff)
+
+        # Add a multi-color bar chart layer
+        layer = c.addBarLayer3(data)
+
+        # Set layer to 3D with 10 pixels 3D depth
+        layer.set3D(10)
+
+        # Set bar shape to circular (cylinder)
+        layer.setBarShape(ChartDirector::CircleShape)
+
+        # Set the labels on the x axis.
+        c.xAxis().setLabels(labels)
+
+        # Add a title to the y axis
+        c.yAxis().setTitle("MBytes")
+
+        # Add a title to the x axis
+        c.xAxis().setTitle("Work Week 25")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/cylinderbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data = [85, 156, 179.5, 211, 123]
+
+# The labels for the bar chart
+labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+# Create a XYChart object of size 400 x 240 pixels.
+c = ChartDirector::XYChart.new(400, 240)
+
+# Add a title to the chart using 14 pts Times Bold Italic font
+c.addTitle("Weekly Server Load", "timesbi.ttf", 14)
+
+# Set the plotarea at (45, 40) and of 300 x 160 pixels in size. Use alternating light
+# grey (f8f8f8) / white (ffffff) background.
+c.setPlotArea(45, 40, 300, 160, 0xf8f8f8, 0xffffff)
+
+# Add a multi-color bar chart layer
+layer = c.addBarLayer3(data)
+
+# Set layer to 3D with 10 pixels 3D depth
+layer.set3D(10)
+
+# Set bar shape to circular (cylinder)
+layer.setBarShape(ChartDirector::CircleShape)
+
+# Set the labels on the x axis.
+c.xAxis().setLabels(labels)
+
+# Add a title to the y axis
+c.yAxis().setTitle("MBytes")
+
+# Add a title to the x axis
+c.xAxis().setTitle("Work Week 25")
+
+# Output the chart
+c.makeChart("cylinderbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

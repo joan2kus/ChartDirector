@@ -1,0 +1,162 @@
+<HTML>
+<HEAD>
+<Title>Start Angle and Direction</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Start Angle and Direction</p>
+<hr class="separator">
+<div class="content">
+<img src="images/anglepie0.png">&nbsp;&nbsp;<img src="images/anglepie1.png">
+<br><br>
+This example demonstrates different sector layout angles and directions.<br><br>
+By default, ChartDirector positions sectors starting from the upward pointing position, and in clockwise direction.<br><br>
+The start angle and layout direction can be changed using <a href="PieChart.setStartAngle.htm">PieChart.setStartAngle</a>.<br><br>
+One common application for <a href="PieChart.setStartAngle.htm">PieChart.setStartAngle</a> is to facilitate layout of pie charts containing many small sectors. Please refer to <a href="sidelabelpie.htm">Side Label Layout</a> for an example.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/anglepie_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class AnglepieController &lt; ApplicationController
+
+    def index()
+        @title = "Start Angle and Direction"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 2
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # Determine the starting angle and direction based on input parameter
+        angle = 0
+        clockwise = true
+        if params["img"] != "0"
+            angle = 90
+            clockwise = false
+        end
+
+        # The data for the pie chart
+        data = [25, 18, 15, 12, 8, 30, 35]
+
+        # The labels for the pie chart
+        labels = ["Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+            "Production"]
+
+        # Create a PieChart object of size 280 x 240 pixels
+        c = ChartDirector::PieChart.new(280, 240)
+
+        # Set the center of the pie at (140, 130) and the radius to 80 pixels
+        c.setPieSize(140, 130, 80)
+
+        # Add a title to the pie to show the start angle and direction
+        if clockwise
+            c.addTitle(sprintf("Start Angle = %s degrees\nDirection = Clockwise", angle))
+        else
+            c.addTitle(sprintf("Start Angle = %s degrees\nDirection = AntiClockwise",
+                angle))
+        end
+
+        # Set the pie start angle and direction
+        c.setStartAngle(angle, clockwise)
+
+        # Draw the pie in 3D
+        c.set3D()
+
+        # Set the pie data and the pie labels
+        c.setData(data, labels)
+
+        # Explode the 1st sector (index = 0)
+        c.setExplode(0)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/anglepie.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # Determine the starting angle and direction based on input parameter
+    angle = 0
+    clockwise = true
+    if img != "0"
+        angle = 90
+        clockwise = false
+    end
+
+    # The data for the pie chart
+    data = [25, 18, 15, 12, 8, 30, 35]
+
+    # The labels for the pie chart
+    labels = ["Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+        "Production"]
+
+    # Create a PieChart object of size 280 x 240 pixels
+    c = ChartDirector::PieChart.new(280, 240)
+
+    # Set the center of the pie at (140, 130) and the radius to 80 pixels
+    c.setPieSize(140, 130, 80)
+
+    # Add a title to the pie to show the start angle and direction
+    if clockwise
+        c.addTitle(sprintf("Start Angle = %s degrees\nDirection = Clockwise", angle))
+    else
+        c.addTitle(sprintf("Start Angle = %s degrees\nDirection = AntiClockwise",
+            angle))
+    end
+
+    # Set the pie start angle and direction
+    c.setStartAngle(angle, clockwise)
+
+    # Draw the pie in 3D
+    c.set3D()
+
+    # Set the pie data and the pie labels
+    c.setData(data, labels)
+
+    # Explode the 1st sector (index = 0)
+    c.setExplode(0)
+
+    # Output the chart
+    c.makeChart("anglepie%s.png" % img)
+end
+
+createChart("0")
+createChart("1")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

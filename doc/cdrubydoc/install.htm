@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<Title>Installation</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Installation</p>
+<hr class="separator">
+<p class="heading1aa">Ruby Version Compatibility</p><div class="content">
+ChartDirector for Ruby requires at least Ruby 1.8.0, and has been tested up to Ruby 1.9.1 (the latest Ruby release as of the date of this document).
+</div><p class="heading1a">Extracting ChartDirector for Ruby</p><div class="content">
+ChartDirector for Ruby is released as a zip file on Windows, and as a tar.gz file on Linux, FreeBSD, Solaris and Mac OS X. To use ChartDirector for Ruby, the first step is to extract the ChartDirector for Ruby distribution to an empty directory.<br><br>
+<ul>
+<li>On Windows, you may use Winzip or similar tools to unzip the ChartDirector distribution.<br><br>
+<li>On Linux, FreeBSD, Solaris and Mac OS X, you may use:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> tar xvfz [chartdir_file_name].tar.gz </div><br>
+</ul>
+</div><p class="heading1a">Running Ruby On Rails Sample Scripts</p><div class="content">
+ChartDirector for Ruby comes with numerous Ruby On Rails sample scripts. They are packaged as a Ruby On Rails application in "ChartDirector/railsdemo". To run these sample scripts, you may go to the "ChartDirector/railsdemo" subdirectory, then start the application using Ruby WebBrick:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ruby script/server </div><br>
+After starting WebBrick, you should be able to access the ChartDirector sample scripts at port 3000.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> http://127.0.0.1:3000 </div><br>
+</div><p class="heading1a">Running Command Line Ruby Sample Scripts</p><div class="content">
+In addition to Ruby On Rails sample scripts, ChartDirector for Ruby also comes with numerous command line Ruby sample scripts in "ChartDirector/rubydemo". These scripts create charts as image files. To run them, please follow the steps below to install ChartDirector for Ruby in your system first.
+</div><p class="heading1a">Using ChartDirector in Your Own Ruby or Ruby On Rails applications</p><div class="content">
+The ChartDirector for Ruby library is in "ChartDirector/railsdemo/vendor". To use ChartDirector in your own Ruby or Ruby On Rails application, you need to copy the ChartDirector for Ruby library to a directory in your Ruby module search path. You may use one of the following methods:<br><br>
+<ul>
+<li>Run the install.rb script in the "ChartDirector" directory. This will automatically copy the ChartDirector for Ruby library to a directory in your Ruby module search path.<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ruby install.rb </div><br>
+You may uninstall the ChartDirector for Ruby library later by using:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ruby uninstall.rb </div><br>
+<li>If you do not want to use the automatic installation script, you may manually copy *everything* in "ChartDirector/railsdemo/vendor" (including the fonts subdirectory for Linux, FreeBSD and Solaris editions of ChartDirector) to a directory in the Ruby module search path. You may use the following command to find out the directories in your Ruby module search path:<br><br>
+<div style="margin-left:25;font-family:courier new,courier"> ruby -e "puts $:" </div><br>
+<li>For Ruby On Rails applications, if you do not have write access to the Ruby module search path directories, you may copy *everything* in "ChartDirector/railsdemo/vendor" (including the fonts subdirectory for Linux, FreeBSD and Solaris editions of ChartDirector) to the "vendor" subdirectory of your Ruby On Rails application.<br><br>
+<li>For standalone Ruby scripts (such as those in the "ChartDirector/rubydemo" subdirectory), if you do not have write access to the Ruby module search path directories, you may copy *everything* in "ChartDirector/railsdemo/vendor" (including the fonts subdirectory for Linux, FreeBSD and Solaris editions of ChartDirector) to the "current working directory" (that is, "ChartDirector/rubydemo" for running the sample scripts).<br><br>
+</ul>
+</div><p class="heading1a">Installing the ChartDirector License</p><div class="content">
+If you have purchased a license to use ChartDirector, you should have a license code delivered to your via email and postal mail.<br><br>
+If your license key is for upgrading from a previous version of ChartDirector, you need to append the upgrade license key to the previous version license key, and use the combined license key.<br><br>
+There are two alternative methods to install the license key.<br><br>
+<ul>
+<li>Create a one-line ASCII file using Notepad or other text editor, and put the license code in that line. The whole file should contain only the license code. Name that file "chartdir.lic" and put the file in the same directory as the active "libchartdir.so"  (for Linux, FreeBSD, Mac OS X and Solaris) or "chartdir.dll" (for Windows),  which should be in the "vendor" subdirectory (for Ruby On Rails applications),  or in the directory where the ChartDirector for  Ruby module is installed or copied to (eg.  "/usr/local/lib/ruby/site_lib/1.8").<br><br>
+If the license file appears to have no effect (does not disable the yellow banner line), and you are using ChartDirector with Ruby On Rails, please make sure the web server "anonymous user" has read access to the "chartdir.lic" file. You may copy the view file "cdinfo.rhtml" (in "ChartDirector/app/views/cddemo") to the views directory of any controller, then access that view to display a diagnostic page. The page will explain why the license cannot be loaded.<br><br>
+<div style="background-color:#cccccc;width:99%;padding:10px">
+Make sure your license file is called "chartdir.lic". In particular, Notepad may automatically append ".txt" to the file name when creating a new file. So even if the file is saved as "chartdir.lic", it may end up as "chartdir.lic.txt". If this is the case, please rename the file back to "chartdir.lic".
+</div><br>
+<li>An alternative method is to hard code the license key into the source code by using the <a href="ChartDirector.setLicenseCode.htm">ChartDirector.setLicenseCode</a> API. This method is recommended if your are redistributing ChartDirector, because your customer will then be unable to see the license key (unless your software is open source).<br><br>
+</ul></div><br>
+<hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

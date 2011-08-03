@@ -1,0 +1,190 @@
+<HTML>
+<HEAD>
+<Title>Surface Chart (3)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Surface Chart (3)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/surface3.jpg">
+<br><br>
+This example demonstrates using deep perspective. It also demonstrates surface grid lines of different line styles.<br><br>
+<ul><li> The deep perspective in this example is configured using <a href="SurfaceChart.setPerspective.htm">SurfaceChart.setPerspective</a>.<br><br>
+<li> Like all other lines in ChartDirector, "dash line colors" can be applied to surface grid lines to cause them to draw in dash line styles. In this example, <a href="BaseChart.dashLineColor.htm">BaseChart.dashLineColor</a> is used to create a dash line color, which is used as the minor surface grid line color in <a href="SurfaceChart.setSurfaceAxisGrid.htm">SurfaceChart.setSurfaceAxisGrid</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/surface3_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class Surface3Controller &lt; ApplicationController
+
+    def index()
+        @title = "Surface Chart (3)"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The x and y coordinates of the grid
+        dataX = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            ]
+        dataY = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            ]
+
+        # The values at the grid points. In this example, we will compute the values using
+        # the formula z = Sin(x * x / 128 - y * y / 256 + 3) * Cos(x / 4 + 1 - Exp(y / 8))
+        dataZ = Array.new((dataX.length) * (dataY.length))
+        0.upto(dataY.length - 1) do |yIndex|
+            y = dataY[yIndex]
+            0.upto(dataX.length - 1) do |xIndex|
+                x = dataX[xIndex]
+                dataZ[yIndex * (dataX.length) + xIndex] = Math.sin(
+                    x * x / 128.0 - y * y / 256.0 + 3) * Math.cos(x / 4.0 + 1 - Math.exp(
+                    y / 8.0))
+            end
+        end
+
+        # Create a SurfaceChart object of size 750 x 600 pixels
+        c = ChartDirector::SurfaceChart.new(750, 600)
+
+        # Add a title to the chart using 20 points Times New Roman Italic font
+        c.addTitle("Surface Energy Density       ", "timesi.ttf", 20)
+
+        # Set the center of the plot region at (380, 260), and set width x depth x height
+        # to 360 x 360 x 270 pixels
+        c.setPlotRegion(380, 260, 360, 360, 270)
+
+        # Set the elevation and rotation angles to 30 and 210 degrees
+        c.setViewAngle(30, 210)
+
+        # Set the perspective level to 60
+        c.setPerspective(60)
+
+        # Set the data to use to plot the chart
+        c.setData(dataX, dataY, dataZ)
+
+        # Spline interpolate data to a 80 x 80 grid for a smooth surface
+        c.setInterpolation(80, 80)
+
+        # Use semi-transparent black (c0000000) for x and y major surface grid lines. Use
+        # dotted style for x and y minor surface grid lines.
+        majorGridColor = 0xc0000000
+        minorGridColor = c.dashLineColor(majorGridColor, ChartDirector::DotLine)
+        c.setSurfaceAxisGrid(majorGridColor, majorGridColor, minorGridColor,
+            minorGridColor)
+
+        # Set contour lines to semi-transparent white (80ffffff)
+        c.setContourColor(0x80ffffff)
+
+        # Add a color axis (the legend) in which the left center is anchored at (665,
+        # 280). Set the length to 200 pixels and the labels on the right side.
+        c.setColorAxis(665, 280, ChartDirector::Left, 200, ChartDirector::Right)
+
+        # Set the x, y and z axis titles using 12 points Arial Bold font
+        c.xAxis().setTitle("X Title\nPlaceholder", "arialbd.ttf", 12)
+        c.yAxis().setTitle("Y Title\nPlaceholder", "arialbd.ttf", 12)
+        c.zAxis().setTitle("Z Title Placeholder", "arialbd.ttf", 12)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::JPG), :type =&gt; "image/jpeg",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/surface3.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The x and y coordinates of the grid
+dataX = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+dataY = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# The values at the grid points. In this example, we will compute the values using
+# the formula z = Sin(x * x / 128 - y * y / 256 + 3) * Cos(x / 4 + 1 - Exp(y / 8))
+dataZ = Array.new((dataX.length) * (dataY.length))
+0.upto(dataY.length - 1) do |yIndex|
+    y = dataY[yIndex]
+    0.upto(dataX.length - 1) do |xIndex|
+        x = dataX[xIndex]
+        dataZ[yIndex * (dataX.length) + xIndex] = Math.sin(
+            x * x / 128.0 - y * y / 256.0 + 3) * Math.cos(x / 4.0 + 1 - Math.exp(
+            y / 8.0))
+    end
+end
+
+# Create a SurfaceChart object of size 750 x 600 pixels
+c = ChartDirector::SurfaceChart.new(750, 600)
+
+# Add a title to the chart using 20 points Times New Roman Italic font
+c.addTitle("Surface Energy Density       ", "timesi.ttf", 20)
+
+# Set the center of the plot region at (380, 260), and set width x depth x height to
+# 360 x 360 x 270 pixels
+c.setPlotRegion(380, 260, 360, 360, 270)
+
+# Set the elevation and rotation angles to 30 and 210 degrees
+c.setViewAngle(30, 210)
+
+# Set the perspective level to 60
+c.setPerspective(60)
+
+# Set the data to use to plot the chart
+c.setData(dataX, dataY, dataZ)
+
+# Spline interpolate data to a 80 x 80 grid for a smooth surface
+c.setInterpolation(80, 80)
+
+# Use semi-transparent black (c0000000) for x and y major surface grid lines. Use
+# dotted style for x and y minor surface grid lines.
+majorGridColor = 0xc0000000
+minorGridColor = c.dashLineColor(majorGridColor, ChartDirector::DotLine)
+c.setSurfaceAxisGrid(majorGridColor, majorGridColor, minorGridColor, minorGridColor)
+
+# Set contour lines to semi-transparent white (80ffffff)
+c.setContourColor(0x80ffffff)
+
+# Add a color axis (the legend) in which the left center is anchored at (665, 280).
+# Set the length to 200 pixels and the labels on the right side.
+c.setColorAxis(665, 280, ChartDirector::Left, 200, ChartDirector::Right)
+
+# Set the x, y and z axis titles using 12 points Arial Bold font
+c.xAxis().setTitle("X Title\nPlaceholder", "arialbd.ttf", 12)
+c.yAxis().setTitle("Y Title\nPlaceholder", "arialbd.ttf", 12)
+c.zAxis().setTitle("Z Title Placeholder", "arialbd.ttf", 12)
+
+# Output the chart
+c.makeChart("surface3.jpg")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

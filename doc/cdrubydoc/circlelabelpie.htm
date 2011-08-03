@@ -1,0 +1,188 @@
+<HTML>
+<HEAD>
+<Title>Circular Label Layout</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Circular Label Layout</p>
+<hr class="separator">
+<div class="content">
+<img src="images/circlelabelpie0.png">&nbsp;&nbsp;<img src="images/circlelabelpie1.png">
+<br><br>
+This example demonstrates label positioning in the "circular label layout" method.<br><br>
+By default, in "circular label layout", the sector labels will be external and close to the pie perimeter.<br><br>
+The <a href="PieChart.setLabelPos.htm">PieChart.setLabelPos</a> method can be used to control the distance between the labels and the pie perimeter, and add join lines to connect the labels to the sectors. The join lines are useful if the labels are far away from the pie perimeter.<br><br>
+The distance between the sector labels and the pie perimeter can be negative, in which case the labels will be internal to the pie.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/circlelabelpie_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class CirclelabelpieController &lt; ApplicationController
+
+    def index()
+        @title = "Circular Label Layout"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 2
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pie chart
+        data = [42, 18, 8]
+
+        # The labels for the pie chart
+        labels = ["Agree", "Disagree", "Not Sure"]
+
+        # The colors to use for the sectors
+        colors = [0x66ff66, 0xff6666, 0xffff00]
+
+        # Create a PieChart object of size 300 x 300 pixels. Set the background to a
+        # gradient color from blue (aaccff) to sky blue (ffffff), with a grey (888888)
+        # border. Use rounded corners and soft drop shadow.
+        c = ChartDirector::PieChart.new(300, 300)
+        c.setBackground(c.linearGradientColor(0, 0, 0, c.getHeight() / 2, 0xaaccff,
+            0xffffff), 0x888888)
+        c.setRoundedFrame()
+        c.setDropShadow()
+
+        if params["img"] == "0"
+        #============================================================
+        #    Draw a pie chart where the label is on top of the pie
+        #============================================================
+
+            # Set the center of the pie at (150, 150) and the radius to 120 pixels
+            c.setPieSize(150, 150, 120)
+
+            # Set the label position to -40 pixels from the perimeter of the pie (-ve
+            # means label is inside the pie)
+            c.setLabelPos(-40)
+
+        else
+        #============================================================
+        #    Draw a pie chart where the label is outside the pie
+        #============================================================
+
+            # Set the center of the pie at (150, 150) and the radius to 80 pixels
+            c.setPieSize(150, 150, 80)
+
+            # Set the sector label position to be 20 pixels from the pie. Use a join line
+            # to connect the labels to the sectors.
+            c.setLabelPos(20, ChartDirector::LineColor)
+
+        end
+
+        # Set the pie data and the pie labels
+        c.setData(data, labels)
+
+        # Set the sector colors
+        c.setColors2(ChartDirector::DataColor, colors)
+
+        # Use local gradient shading, with a 1 pixel semi-transparent black (bb000000)
+        # border
+        c.setSectorStyle(ChartDirector::LocalGradientShading, 0xbb000000, 1)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/circlelabelpie.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The data for the pie chart
+    data = [42, 18, 8]
+
+    # The labels for the pie chart
+    labels = ["Agree", "Disagree", "Not Sure"]
+
+    # The colors to use for the sectors
+    colors = [0x66ff66, 0xff6666, 0xffff00]
+
+    # Create a PieChart object of size 300 x 300 pixels. Set the background to a
+    # gradient color from blue (aaccff) to sky blue (ffffff), with a grey (888888)
+    # border. Use rounded corners and soft drop shadow.
+    c = ChartDirector::PieChart.new(300, 300)
+    c.setBackground(c.linearGradientColor(0, 0, 0, c.getHeight() / 2, 0xaaccff,
+        0xffffff), 0x888888)
+    c.setRoundedFrame()
+    c.setDropShadow()
+
+    if img == "0"
+    #============================================================
+    #    Draw a pie chart where the label is on top of the pie
+    #============================================================
+
+        # Set the center of the pie at (150, 150) and the radius to 120 pixels
+        c.setPieSize(150, 150, 120)
+
+        # Set the label position to -40 pixels from the perimeter of the pie (-ve
+        # means label is inside the pie)
+        c.setLabelPos(-40)
+
+    else
+    #============================================================
+    #    Draw a pie chart where the label is outside the pie
+    #============================================================
+
+        # Set the center of the pie at (150, 150) and the radius to 80 pixels
+        c.setPieSize(150, 150, 80)
+
+        # Set the sector label position to be 20 pixels from the pie. Use a join line
+        # to connect the labels to the sectors.
+        c.setLabelPos(20, ChartDirector::LineColor)
+
+    end
+
+    # Set the pie data and the pie labels
+    c.setData(data, labels)
+
+    # Set the sector colors
+    c.setColors2(ChartDirector::DataColor, colors)
+
+    # Use local gradient shading, with a 1 pixel semi-transparent black (bb000000)
+    # border
+    c.setSectorStyle(ChartDirector::LocalGradientShading, 0xbb000000, 1)
+
+    # Output the chart
+    c.makeChart("circlelabelpie%s.png" % img)
+end
+
+createChart("0")
+createChart("1")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

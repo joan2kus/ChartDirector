@@ -1,0 +1,27 @@
+<html>
+<body style="margin:5px 0px 0px 5px">
+<script type="text/javascript">
+function popMsg(msg) {
+    alert("You have clicked on " + msg + ".");
+}
+</script>
+<div style="font-size:18pt; font-family:verdana; font-weight:bold">
+    Custom Clickable Objects
+</div>
+<hr style="border:solid 1px #000080" />
+<div style="font-size:10pt; font-family:verdana; margin-bottom:20px">
+    <%= link_to "Source Code Listing",
+        :controller => "cddemo", :action => "viewsource",
+        :ctrl_file => @ctrl_file, :view_file => File.expand_path(__FILE__) %>
+</div>
+<div style="font-size:10pt; font-family:verdana; width:600px; margin-bottom:20px">
+    In the following chart, the lines, legend keys, title, copyright, and the "Merge
+    with Star Tech" text are all clickable!
+</div>
+<img src="<%= url_for(:action => 'get_session_data', :id => 'chart1',
+    :nocache => rand) %>" border="0" usemap="#map1">
+<map name="map1">
+<%= @imageMap %>
+</map>
+</body>
+</html>

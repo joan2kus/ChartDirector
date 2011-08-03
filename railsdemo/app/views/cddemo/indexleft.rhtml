@@ -1,0 +1,593 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<style type="text/css">
+p.demotitle {margin-top:0; margin-bottom:0; padding-left:3; font-family:verdana; font-weight:bold; font-size:9pt; line-height:140%;}
+p.demolink {margin-top:0; margin-bottom:0; padding-left:3; padding-top:2; padding-bottom:1; font-family:verdana; font-size:8pt;}
+</style>
+</head>
+<body style="margin:0px">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family:verdana; font-size:8pt;">
+
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Pie Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Pie Chart", { :controller => "simplepie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Pie Chart", { :controller => "threedpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Depth Pie Chart", { :controller => "multidepthpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Side Label Layout", { :controller => "sidelabelpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Circular Label Layout", { :controller => "circlelabelpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pie Chart with Legend (1)", { :controller => "legendpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pie Chart with Legend (2)", { :controller => "legendpie2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Exploded Pie Chart", { :controller => "explodedpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Icon Pie Chart (1)", { :controller => "iconpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Icon Pie Chart (2)", { :controller => "iconpie2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Pie Chart", { :controller => "multipie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Donut Chart", { :controller => "donut" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Donut Chart", { :controller => "threeddonut" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Icon Donut Chart", { :controller => "icondonut" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Texture Donut Chart", { :controller => "texturedonut" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Concentric Donut Chart", { :controller => "concentric" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "2D Pie Shading", { :controller => "pieshading" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Pie Shading", { :controller => "threedpieshading" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "2D Donut Shading", { :controller => "donutshading" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Donut Shading", { :controller => "threeddonutshading" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Text Style and Colors", { :controller => "fontpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Angle", { :controller => "threedanglepie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Depth", { :controller => "threeddepthpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Shadow Mode", { :controller => "shadowpie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Start Angle and Direction", { :controller => "anglepie" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Donut Width", { :controller => "donutwidth" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Bar Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Bar Chart", { :controller => "simplebar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Color Bar Chart", { :controller => "colorbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Soft Bar Shading", { :controller => "softlightbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Glass Bar Shading", { :controller => "glasslightbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Gradient Bar Shading", { :controller => "gradientbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Cylinder Bar Shading", { :controller => "cylinderlightbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Bar Chart", { :controller => "threedbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Cylinder Bar Shape", { :controller => "cylinderbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polygon Bar Shapes", { :controller => "polygonbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Stacked Bar Chart", { :controller => "stackedbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Percentage Bar Chart", { :controller => "percentbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Bar Chart", { :controller => "multibar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Soft Multi-Bar Chart", { :controller => "softmultibar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Glass Multi-Bar Chart", { :controller => "glassmultibar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Gradient Multi-Bar Chart", { :controller => "gradientmultibar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Cylinder Chart", { :controller => "multicylinder" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Shape Bar Chart", { :controller => "multishapebar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Overlapping Bar Chart", { :controller => "overlapbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Stacked Bar Chart", { :controller => "multistackbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Depth Bar Chart", { :controller => "depthbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Positive Negative Bars", { :controller => "posnegbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Borderless Bar Chart", { :controller => "hbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Dual Horizontal Bar Charts", { :controller => "dualhbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Bars with Marks", { :controller => "markbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pareto Chart", { :controller => "pareto" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Variable Width Bar Chart", { :controller => "varwidthbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Bar Gap", { :controller => "gapbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Line Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Line Chart", { :controller => "simpleline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Compact Line Chart", { :controller => "compactline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Line Chart", { :controller => "threedline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Line Chart", { :controller => "multiline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Symbol Line Chart (1)", { :controller => "symbolline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Symbol Line Chart (2)", { :controller => "symbolline2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Missing Data Points", { :controller => "missingpoints" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Uneven Data Points ", { :controller => "unevenpoints" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Spline Line Chart", { :controller => "splineline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Step Line Chart", { :controller => "stepline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Inter-Line Coloring", { :controller => "linefill" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Line with Target Zone", { :controller => "linecompare" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Line with Error Symbols", { :controller => "errline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Symbol Line Chart", { :controller => "multisymbolline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Binary Data Series", { :controller => "binaryseries" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Custom Symbols", { :controller => "customsymbolline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Rotated Line Chart", { :controller => "rotatedline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Arbitrary XY Line Chart", { :controller => "xyline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Trending and Curve Fitting</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Trend Line Chart", { :controller => "trendline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Scatter Trend Chart", { :controller => "scattertrend" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Confidence Band", { :controller => "confidenceband" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Parametric Curve Fitting", { :controller => "paramcurve" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "General Curve Fitting", { :controller => "curvefitting" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Scatter/Bubble/Vector Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Scatter Chart", { :controller => "scatter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Built-in Symbols", { :controller => "builtinsymbols" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Custom Scatter Symbols", { :controller => "scattersymbols" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Custom Scatter Labels", { :controller => "scatterlabels" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Bubble Chart", { :controller => "bubble" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Bubble Chart (1)", { :controller => "threedbubble" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Bubble Chart (2)", { :controller => "threedbubble2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Bubble Chart (3)", { :controller => "threedbubble3" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Bubble XY Scaling", { :controller => "bubblescale" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Vector Chart", { :controller => "vector" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Area Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Area Chart", { :controller => "simplearea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Enhanced Area Chart", { :controller => "enhancedarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Area Chart", { :controller => "threedarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pattern Area Chart", { :controller => "patternarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Stacked Area Chart", { :controller => "stackedarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Stacked Area Chart", { :controller => "threedstackarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Percentage Area Chart", { :controller => "percentarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Depth Area Chart", { :controller => "deptharea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Rotated Area Chart", { :controller => "rotatedarea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Floating Box/Waterfall Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Box-Whisker Chart", { :controller => "boxwhisker" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Horizontal Box-Whisker Chart", { :controller => "boxwhisker2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Floating Box Chart", { :controller => "floatingbox" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Waterfall Chart", { :controller => "waterfall" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pos/Neg Waterfall Chart", { :controller => "posnegwaterfall" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Gantt Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Gantt Chart", { :controller => "gantt" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Color Gantt Chart", { :controller => "colorgantt" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Layer Gantt Chart", { :controller => "layergantt" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Contour Charts/Heat Maps</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Contour Chart", { :controller => "contour" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Continuous Contour Coloring", { :controller => "smoothcontour" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Scattered Data Contour Chart", { :controller => "scattercontour" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Contour Interpolation", { :controller => "contourinterpolate" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Finance Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple HLOC Chart", { :controller => "hloc" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Candlestick Chart", { :controller => "candlestick" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Finance Chart (1)", { :controller => "finance" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Finance Chart (2)", { :controller => "finance2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<a href="javascript:window.open('<%= url_for :controller => "financedemo" %>', 'financedemo').focus();">
+Interactive Financial Chart
+</a>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Other XY Chart Features</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Marks and Zones (1)", { :controller => "markzone" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Marks and Zones (2)", { :controller => "markzone2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Y Zone Coloring", { :controller => "yzonecolor" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "X Zone Coloring", { :controller => "xzonecolor" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Dual Y-Axis", { :controller => "dualyaxis" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Dual X-Axis", { :controller => "dualxaxis" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multiple Axes", { :controller => "multiaxes" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "4 Quadrant Chart", { :controller => "fourq" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Data Table (1)", { :controller => "datatable" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Data Table (2)", { :controller => "datatable2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Text Style and Colors", { :controller => "fontxy" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Background and Wallpaper", { :controller => "background" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Log Scale Axis", { :controller => "logaxis" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Y-Axis Scaling", { :controller => "axisscale" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Tick Density", { :controller => "ticks" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Surface Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Chart (1)", { :controller => "surface" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Chart (2)", { :controller => "surface2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Chart (3)", { :controller => "surface3" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Scattered Data Surface Chart", { :controller => "scattersurface" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Chart Axis Types", { :controller => "surfaceaxis" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Lighting", { :controller => "surfacelighting" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Shading", { :controller => "surfaceshading" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Wireframe", { :controller => "surfacewireframe" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Surface Perspective", { :controller => "surfaceperspective" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Polar/Radar Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Radar Chart", { :controller => "simpleradar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi Radar Chart", { :controller => "multiradar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Stacked Radar Chart", { :controller => "stackradar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Line Chart", { :controller => "polarline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Area Chart", { :controller => "polararea" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Spline Chart", { :controller => "polarspline" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Scatter Chart", { :controller => "polarscatter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Bubble Chart", { :controller => "polarbubble" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Polar Vector Chart", { :controller => "polarvector" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Rose Chart", { :controller => "rose" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Stacked Rose Chart", { :controller => "stackrose" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Circular Zones", { :controller => "polarzones" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Sector Zones", { :controller => "polarzones2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Pyramids/Cones/Funnels</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Pyramid Chart", { :controller => "simplepyramid" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "3D Pyramid Chart", { :controller => "threedpyramid" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Rotated Pyramid Chart", { :controller => "rotatedpyramid" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Cone Chart", { :controller => "cone" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Funnel Chart", { :controller => "funnel" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pyramid Elevation", { :controller => "pyramidelevation" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pyramid Rotation", { :controller => "pyramidrotation" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Pyramid Gap", { :controller => "pyramidgap" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Meters/Dials/Guages</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Semi-Circle Meter", { :controller => "semicirclemeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Round Meter", { :controller => "roundmeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Wide Angular Meters", { :controller => "wideameter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Square Angular Meters", { :controller => "squareameter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Pointer Angular Meter", { :controller => "multiameter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Icon Angular Meter", { :controller => "iconameter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Horizontal Linear Meter", { :controller => "hlinearmeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Vertical Linear Meter", { :controller => "vlinearmeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Pointer Horizontal Meter", { :controller => "multihmeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Multi-Pointer Vertical Meter", { :controller => "multivmeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Linear Zone Meter", { :controller => "linearzonemeter" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Clickable Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Simple Clickable Charts", { :controller => "clickbar" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Javascript Clickable Chart", { :controller => "jsclick" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Custom Clickable Objects", { :controller => "customclick" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Working With Database</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Database Integration (1)", { :controller => "dbdemo1" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Database Integration (2)", { :controller => "dbdemo2" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<%= link_to "Database Clickable Charts", { :controller => "dbdemo3" }, { :target => "indexright"} %>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Zooming and Scrolling</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<a href="javascript:window.open('<%= url_for :controller => "zoomscrolldemo" %>', 'zoomscrolldemo').focus();">
+Zoom/Scroll Demo (1)
+</a>
+</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<a href="javascript:window.open('<%= url_for :controller => "zoomscrolldemo2" %>', 'zoomscrolldemo').focus();">
+Zoom/Scroll Demo (2)
+</a>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+<tr><td colspan="2" style="background:#9999FF"><p class="demotitle">Realtime Charts</p></td></tr>
+<tr valign="top"><td><p class="demolink">&#8226;</p></td><td><p class="demolink">
+<a href="javascript:window.open('<%= url_for :controller => "realtimedemo" %>', 'realtimedemo').focus();">
+Realtime Chart Demo
+</a>
+</p></td></tr>
+<tr><td><p class="demolink">&nbsp;</p></td></tr>
+
+</table>
+</body>
+</html>
+

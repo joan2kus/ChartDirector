@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+<Title>Gradient Multi-Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Gradient Multi-Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/gradientmultibar.png">
+<br><br>
+This example demonstrates a multi-bar chart with bar gradient shading and gradient color for plot area background.<br><br>
+<ul><li> The gradient plot area background is configured by using <a href="BaseChart.linearGradientColor.htm">BaseChart.linearGradientColor</a> to define the gradient color, then use <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a> to apply it to the plot area.<br><br>
+<li> The <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a> also sets the plot area border and grid line colors to white.<br><br>
+<li> The bar gradient effect is defined using <a href="ChartDirector.barLighting.htm">ChartDirector.barLighting</a>, then applied to the bars using <a href="Layer.setBorderColor.htm">Layer.setBorderColor</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/gradientmultibar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class GradientmultibarController &lt; ApplicationController
+
+    def index()
+        @title = "Gradient Multi-Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data0 = [100, 125, 245, 147, 67]
+        data1 = [85, 156, 179, 211, 123]
+        data2 = [97, 87, 56, 267, 157]
+        labels = ["Mon", "Tue", "Wed", "Thur", "Fri"]
+
+        # Create a XYChart object of size 540 x 375 pixels
+        c = ChartDirector::XYChart.new(540, 375)
+
+        # Add a title to the chart using 18 pts Times Bold Italic font
+        c.addTitle("Average Weekly Network Load", "timesbi.ttf", 18)
+
+        # Set the plotarea at (50, 55) and of 440 x 280 pixels in size. Use a vertical
+        # gradient color from grey (888888) to black (000000) as background. Set border
+        # and grid lines to white (ffffff).
+        c.setPlotArea(50, 55, 440, 280, c.linearGradientColor(0, 55, 0, 335, 0x888888,
+            0x000000), -1, 0xffffff, 0xffffff)
+
+        # Add a legend box at (50, 25) using horizontal layout. Use 10pts Arial Bold as
+        # font, with transparent background.
+        c.addLegend(50, 25, false, "arialbd.ttf", 10).setBackground(
+            ChartDirector::Transparent)
+
+        # Set the x axis labels
+        c.xAxis().setLabels(labels)
+
+        # Draw the ticks between label positions (instead of at label positions)
+        c.xAxis().setTickOffset(0.5)
+
+        # Set axis label style to 8pts Arial Bold
+        c.xAxis().setLabelStyle("arialbd.ttf", 8)
+        c.yAxis().setLabelStyle("arialbd.ttf", 8)
+
+        # Set axis line width to 2 pixels
+        c.xAxis().setWidth(2)
+        c.yAxis().setWidth(2)
+
+        # Add axis title
+        c.yAxis().setTitle("Throughput (MBytes Per Hour)")
+
+        # Add a multi-bar layer with 3 data sets and 4 pixels 3D depth
+        layer = c.addBarLayer2(ChartDirector::Side, 4)
+        layer.addDataSet(data0, 0x66aaee, "Server #1")
+        layer.addDataSet(data1, 0xeebb22, "Server #2")
+        layer.addDataSet(data2, 0xcc0000, "Server #3")
+
+        # Set bar border to transparent. Use bar gradient lighting with light intensity
+        # from 0.75 to 1.75.
+        layer.setBorderColor(ChartDirector::Transparent, ChartDirector::barLighting(0.75,
+            1.75))
+
+        # Configure the bars within a group to touch each others (no gap)
+        layer.setBarGap(0.2, ChartDirector::TouchBar)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/gradientmultibar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data0 = [100, 125, 245, 147, 67]
+data1 = [85, 156, 179, 211, 123]
+data2 = [97, 87, 56, 267, 157]
+labels = ["Mon", "Tue", "Wed", "Thur", "Fri"]
+
+# Create a XYChart object of size 540 x 375 pixels
+c = ChartDirector::XYChart.new(540, 375)
+
+# Add a title to the chart using 18 pts Times Bold Italic font
+c.addTitle("Average Weekly Network Load", "timesbi.ttf", 18)
+
+# Set the plotarea at (50, 55) and of 440 x 280 pixels in size. Use a vertical
+# gradient color from grey (888888) to black (000000) as background. Set border and
+# grid lines to white (ffffff).
+c.setPlotArea(50, 55, 440, 280, c.linearGradientColor(0, 55, 0, 335, 0x888888,
+    0x000000), -1, 0xffffff, 0xffffff)
+
+# Add a legend box at (50, 25) using horizontal layout. Use 10pts Arial Bold as font,
+# with transparent background.
+c.addLegend(50, 25, false, "arialbd.ttf", 10).setBackground(
+    ChartDirector::Transparent)
+
+# Set the x axis labels
+c.xAxis().setLabels(labels)
+
+# Draw the ticks between label positions (instead of at label positions)
+c.xAxis().setTickOffset(0.5)
+
+# Set axis label style to 8pts Arial Bold
+c.xAxis().setLabelStyle("arialbd.ttf", 8)
+c.yAxis().setLabelStyle("arialbd.ttf", 8)
+
+# Set axis line width to 2 pixels
+c.xAxis().setWidth(2)
+c.yAxis().setWidth(2)
+
+# Add axis title
+c.yAxis().setTitle("Throughput (MBytes Per Hour)")
+
+# Add a multi-bar layer with 3 data sets and 4 pixels 3D depth
+layer = c.addBarLayer2(ChartDirector::Side, 4)
+layer.addDataSet(data0, 0x66aaee, "Server #1")
+layer.addDataSet(data1, 0xeebb22, "Server #2")
+layer.addDataSet(data2, 0xcc0000, "Server #3")
+
+# Set bar border to transparent. Use bar gradient lighting with light intensity from
+# 0.75 to 1.75.
+layer.setBorderColor(ChartDirector::Transparent, ChartDirector::barLighting(0.75,
+    1.75))
+
+# Configure the bars within a group to touch each others (no gap)
+layer.setBarGap(0.2, ChartDirector::TouchBar)
+
+# Output the chart
+c.makeChart("gradientmultibar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,180 @@
+<HTML>
+<HEAD>
+<Title>Wide Angular Meters</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Wide Angular Meters</p>
+<hr class="separator">
+<div class="content">
+<img src="images/wideameter0.png">&nbsp;&nbsp;<img src="images/wideameter1.png">&nbsp;&nbsp;<img src="images/wideameter2.png">&nbsp;&nbsp;<img src="images/wideameter3.png">&nbsp;&nbsp;<img src="images/wideameter4.png">&nbsp;&nbsp;<img src="images/wideameter5.png">
+<br><br>
+This example demonstrates angular meters of which the width is large compared to the height. It also demonstrates various background effects.<br><br>
+The meters in this example are created by using large meter radii, but small angular spans. The center (pivot for the pointer) can then be put outside the meter region and the meters can be reduced in height.<br><br>
+This example also demonstrates metallic background effects and background patterns. The backgrounds are configured using <a href="BaseChart.setBackground.htm">BaseChart.setBackground</a>. The metallic colors are created using <a href="ChartDirector.goldColor.htm">ChartDirector.goldColor</a>, <a href="ChartDirector.silverColor.htm">ChartDirector.silverColor</a> and <a href="ChartDirector.metalColor.htm">ChartDirector.metalColor</a>. The background patterns are created by loading image files as pattern colors using <a href="BaseChart.patternColor2.htm">BaseChart.patternColor2</a>.<br><br>
+This example also shows the effect of the semi-transparent pointers, which can avoid blocking the labels on the meter.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/wideameter_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class WideameterController &lt; ApplicationController
+
+    def index()
+        @title = "Wide Angular Meters"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 6
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The value to display on the meter
+        value = 6.5
+
+        # Create an AugularMeter object of size 200 x 100 pixels with rounded corners
+        m = ChartDirector::AngularMeter.new(200, 100)
+        m.setRoundedFrame()
+
+        # Set meter background according to a parameter
+        if params["img"] == "0"
+            # Use gold background color
+            m.setBackground(ChartDirector::goldColor(), 0x000000, -2)
+        elsif params["img"] == "1"
+            # Use silver background color
+            m.setBackground(ChartDirector::silverColor(), 0x000000, -2)
+        elsif params["img"] == "2"
+            # Use metallic blue (9898E0) background color
+            m.setBackground(ChartDirector::metalColor(0x9898e0), 0x000000, -2)
+        elsif params["img"] == "3"
+            # Use a wood pattern as background color
+            m.setBackground(m.patternColor2(File.dirname(__FILE__) + "/wood.png"),
+                0x000000, -2)
+        elsif params["img"] == "4"
+            # Use a marble pattern as background color
+            m.setBackground(m.patternColor2(File.dirname(__FILE__) + "/marble.png"),
+                0x000000, -2)
+        else
+            # Use a solid light purple (EEBBEE) background color
+            m.setBackground(0xeebbee, 0x000000, -2)
+        end
+
+        # Set the meter center at (100, 235), with radius 210 pixels, and span from -24 to
+        # +24 degress
+        m.setMeter(100, 235, 210, -24, 24)
+
+        # Meter scale is 0 - 100, with a tick every 1 unit
+        m.setScale(0, 10, 1)
+
+        # Set 0 - 6 as green (99ff99) zone, 6 - 8 as yellow (ffff00) zone, and 8 - 10 as
+        # red (ff3333) zone
+        m.addZone(0, 6, 0x99ff99, 0x808080)
+        m.addZone(6, 8, 0xffff00, 0x808080)
+        m.addZone(8, 10, 0xff3333, 0x808080)
+
+        # Add a title at the bottom of the meter using 10 pts Arial Bold font
+        m.addTitle2(ChartDirector::Bottom, "OUTPUT POWER LEVEL\n", "arialbd.ttf", 10)
+
+        # Add a semi-transparent black (80000000) pointer at the specified value
+        m.addPointer(value, 0x80000000)
+
+        # Output the chart
+        send_data(m.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/wideameter.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The value to display on the meter
+    value = 6.5
+
+    # Create an AugularMeter object of size 200 x 100 pixels with rounded corners
+    m = ChartDirector::AngularMeter.new(200, 100)
+    m.setRoundedFrame()
+
+    # Set meter background according to a parameter
+    if img == "0"
+        # Use gold background color
+        m.setBackground(ChartDirector::goldColor(), 0x000000, -2)
+    elsif img == "1"
+        # Use silver background color
+        m.setBackground(ChartDirector::silverColor(), 0x000000, -2)
+    elsif img == "2"
+        # Use metallic blue (9898E0) background color
+        m.setBackground(ChartDirector::metalColor(0x9898e0), 0x000000, -2)
+    elsif img == "3"
+        # Use a wood pattern as background color
+        m.setBackground(m.patternColor2("wood.png"), 0x000000, -2)
+    elsif img == "4"
+        # Use a marble pattern as background color
+        m.setBackground(m.patternColor2("marble.png"), 0x000000, -2)
+    else
+        # Use a solid light purple (EEBBEE) background color
+        m.setBackground(0xeebbee, 0x000000, -2)
+    end
+
+    # Set the meter center at (100, 235), with radius 210 pixels, and span from -24
+    # to +24 degress
+    m.setMeter(100, 235, 210, -24, 24)
+
+    # Meter scale is 0 - 100, with a tick every 1 unit
+    m.setScale(0, 10, 1)
+
+    # Set 0 - 6 as green (99ff99) zone, 6 - 8 as yellow (ffff00) zone, and 8 - 10 as
+    # red (ff3333) zone
+    m.addZone(0, 6, 0x99ff99, 0x808080)
+    m.addZone(6, 8, 0xffff00, 0x808080)
+    m.addZone(8, 10, 0xff3333, 0x808080)
+
+    # Add a title at the bottom of the meter using 10 pts Arial Bold font
+    m.addTitle2(ChartDirector::Bottom, "OUTPUT POWER LEVEL\n", "arialbd.ttf", 10)
+
+    # Add a semi-transparent black (80000000) pointer at the specified value
+    m.addPointer(value, 0x80000000)
+
+    # Output the chart
+    m.makeChart("wideameter%s.png" % img)
+end
+
+createChart("0")
+createChart("1")
+createChart("2")
+createChart("3")
+createChart("4")
+createChart("5")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

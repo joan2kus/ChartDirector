@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+<Title>Rotated Pyramid Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Rotated Pyramid Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/rotatedpyramid.png">
+<br><br>
+This example demonstrates a semi-transparent pyramid viewed at elevation and rotation angles. It also demonstrates adding a legend box to the pyramid chart.<br><br>
+The elevation and rotation angles are set using <a href="PyramidChart.setViewAngle.htm">PyramidChart.setViewAngle</a>. The legend box is added using <a href="BaseChart.addLegend.htm">BaseChart.addLegend</a>. Semi-transparent colors are used to make the pyramid semi-transparent.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/rotatedpyramid_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class RotatedpyramidController &lt; ApplicationController
+
+    def index()
+        @title = "Rotated Pyramid Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pyramid chart
+        data = [156, 123, 211, 179]
+
+        # The labels for the pyramid chart
+        labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+        # The semi-transparent colors for the pyramid layers
+        colors = [0x400000cc, 0x4066aaee, 0x40ffbb00, 0x40ee6622]
+
+        # Create a PyramidChart object of size 450 x 400 pixels
+        c = ChartDirector::PyramidChart.new(450, 400)
+
+        # Set the pyramid center at (220, 180), and width x height to 150 x 300 pixels
+        c.setPyramidSize(220, 180, 150, 300)
+
+        # Set the elevation to 15 degrees and rotation to 75 degrees
+        c.setViewAngle(15, 75)
+
+        # Set the pyramid data and labels
+        c.setData(data, labels)
+
+        # Set the layer colors to the given colors
+        c.setColors2(ChartDirector::DataColor, colors)
+
+        # Leave 1% gaps between layers
+        c.setLayerGap(0.01)
+
+        # Add a legend box at (320, 60), with light grey (eeeeee) background and grey
+        # (888888) border. Set the top-left and bottom-right corners to rounded corners of
+        # 10 pixels radius.
+        legendBox = c.addLegend(320, 60)
+        legendBox.setBackground(0xeeeeee, 0x888888)
+        legendBox.setRoundedCorners(10, 0, 10, 0)
+
+        # Add labels at the center of the pyramid layers using Arial Bold font. The labels
+        # will show the percentage of the layers.
+        c.setCenterLabel("{percent}%", "arialbd.ttf")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/rotatedpyramid.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the pyramid chart
+data = [156, 123, 211, 179]
+
+# The labels for the pyramid chart
+labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+# The semi-transparent colors for the pyramid layers
+colors = [0x400000cc, 0x4066aaee, 0x40ffbb00, 0x40ee6622]
+
+# Create a PyramidChart object of size 450 x 400 pixels
+c = ChartDirector::PyramidChart.new(450, 400)
+
+# Set the pyramid center at (220, 180), and width x height to 150 x 300 pixels
+c.setPyramidSize(220, 180, 150, 300)
+
+# Set the elevation to 15 degrees and rotation to 75 degrees
+c.setViewAngle(15, 75)
+
+# Set the pyramid data and labels
+c.setData(data, labels)
+
+# Set the layer colors to the given colors
+c.setColors2(ChartDirector::DataColor, colors)
+
+# Leave 1% gaps between layers
+c.setLayerGap(0.01)
+
+# Add a legend box at (320, 60), with light grey (eeeeee) background and grey
+# (888888) border. Set the top-left and bottom-right corners to rounded corners of 10
+# pixels radius.
+legendBox = c.addLegend(320, 60)
+legendBox.setBackground(0xeeeeee, 0x888888)
+legendBox.setRoundedCorners(10, 0, 10, 0)
+
+# Add labels at the center of the pyramid layers using Arial Bold font. The labels
+# will show the percentage of the layers.
+c.setCenterLabel("{percent}%", "arialbd.ttf")
+
+# Output the chart
+c.makeChart("rotatedpyramid.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

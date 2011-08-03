@@ -1,0 +1,149 @@
+<HTML>
+<HEAD>
+<Title>Polar Vector Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Polar Vector Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/polarvector.png">
+<br><br>
+This example demonstrates a polar vector chart.<br><br>
+A vector chart is like a scatter chart, but the symbols are arrows which can be of arbitrary lengths pointing to arbitrary directions. Thus each symbol in a vector chart is specified by 4 values - the radial and angular coordinates, and the length and the direction.<br><br>
+In ChartDirector, a polar vector layer is created using <a href="PolarChart.addVectorLayer.htm">PolarChart.addVectorLayer</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/polarvector_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class PolarvectorController &lt; ApplicationController
+
+    def index()
+        @title = "Polar Vector Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # Coordinates of the starting points of the vectors
+        radius = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 20, 20, 20, 20,
+            20, 20, 20, 20, 20, 20, 20, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25
+            ]
+        angle = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90,
+            120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210,
+            240, 270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0,
+            30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
+
+        # Magnitude and direction of the vectors
+        magnitude = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        direction = [60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120,
+            150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240,
+            270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30,
+            60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30]
+
+        # Create a PolarChart object of size 460 x 460 pixels
+        c = ChartDirector::PolarChart.new(460, 460)
+
+        # Add a title to the chart at the top left corner using 15pts Arial Bold Italic
+        # font
+        c.addTitle("Polar Vector Chart Demonstration", "arialbi.ttf", 15)
+
+        # Set center of plot area at (230, 240) with radius 180 pixels
+        c.setPlotArea(230, 240, 180)
+
+        # Set the grid style to circular grid
+        c.setGridStyle(false)
+
+        # Set angular axis as 0 - 360, with a spoke every 30 units
+        c.angularAxis().setLinearScale(0, 360, 30)
+
+        # Add a polar vector layer to the chart with blue (0000ff) vectors
+        c.addVectorLayer(radius, angle, magnitude, direction,
+            ChartDirector::RadialAxisScale, 0x0000ff)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/polarvector.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# Coordinates of the starting points of the vectors
+radius = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+    10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 20, 20, 20, 20, 20, 20,
+    20, 20, 20, 20, 20, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+angle = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120,
+    150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270,
+    300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90,
+    120, 150, 180, 210, 240, 270, 300, 330]
+
+# Magnitude and direction of the vectors
+magnitude = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1]
+direction = [60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120, 150,
+    180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300,
+    330, 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60, 90, 120,
+    150, 180, 210, 240, 270, 300, 330, 0, 30]
+
+# Create a PolarChart object of size 460 x 460 pixels
+c = ChartDirector::PolarChart.new(460, 460)
+
+# Add a title to the chart at the top left corner using 15pts Arial Bold Italic font
+c.addTitle("Polar Vector Chart Demonstration", "arialbi.ttf", 15)
+
+# Set center of plot area at (230, 240) with radius 180 pixels
+c.setPlotArea(230, 240, 180)
+
+# Set the grid style to circular grid
+c.setGridStyle(false)
+
+# Set angular axis as 0 - 360, with a spoke every 30 units
+c.angularAxis().setLinearScale(0, 360, 30)
+
+# Add a polar vector layer to the chart with blue (0000ff) vectors
+c.addVectorLayer(radius, angle, magnitude, direction, ChartDirector::RadialAxisScale,
+    0x0000ff)
+
+# Output the chart
+c.makeChart("polarvector.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

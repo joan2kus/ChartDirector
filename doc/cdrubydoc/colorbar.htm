@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<Title>Multi-Color Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Multi-Color Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/colorbar.png">
+<br><br>
+This example demonstrates creating a multi-color bar chart, in which each bar has a different color. It also demonstrates metallic background colors and various 3D border effects.<br><br>
+A multi-color bar layer is a bar layer in which each bar has a different color. It is created using <a href="XYChart.addBarLayer3.htm">XYChart.addBarLayer3</a>. The colors can be specified explicitly (as is in this example), or can be taken automatically from the color palette.<br><br>
+<ul><li> Use <a href="ChartDirector.goldColor.htm">ChartDirector.goldColor</a> to create a golden color. Set it as the background color with 3D border effects using <a href="XYChart.XYChart.htm">XYChart.XYChart</a>.<br><br>
+<li> Use <a href="ChartDirector.metalColor.htm">ChartDirector.metalColor</a> to create a metallic blue color. Set it as the chart title background color with 3D border effects by using <a href="Box.setBackground.htm">Box.setBackground</a> of the title <a href="TextBox.htm">TextBox</a> object.<br><br>
+<li> Use <a href="XYChart.addBarLayer2.htm">XYChart.addBarLayer2</a> to create a multi-color bar layer.<br><br>
+<li> Set 3D border effects for the bars using <a href="Layer.setBorderColor.htm">Layer.setBorderColor</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/colorbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class ColorbarController &lt; ApplicationController
+
+    def index()
+        @title = "Multi-Color Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data = [85, 156, 179.5, 211, 123]
+
+        # The labels for the bar chart
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # The colors for the bar chart
+        colors = [0xb8bc9c, 0xa0bdc4, 0x999966, 0x333366, 0xc3c3e6]
+
+        # Create a XYChart object of size 300 x 220 pixels. Use golden background color.
+        # Use a 2 pixel 3D border.
+        c = ChartDirector::XYChart.new(300, 220, ChartDirector::goldColor(), -1, 2)
+
+        # Add a title box using 10 point Arial Bold font. Set the background color to
+        # metallic blue (9999FF) Use a 1 pixel 3D border.
+        c.addTitle("Daily Network Load", "arialbd.ttf", 10).setBackground(
+            ChartDirector::metalColor(0x9999ff), -1, 1)
+
+        # Set the plotarea at (40, 40) and of 240 x 150 pixels in size
+        c.setPlotArea(40, 40, 240, 150)
+
+        # Add a multi-color bar chart layer using the given data and colors. Use a 1 pixel
+        # 3D border for the bars.
+        c.addBarLayer3(data, colors).setBorderColor(-1, 1)
+
+        # Set the labels on the x axis.
+        c.xAxis().setLabels(labels)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/colorbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data = [85, 156, 179.5, 211, 123]
+
+# The labels for the bar chart
+labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+# The colors for the bar chart
+colors = [0xb8bc9c, 0xa0bdc4, 0x999966, 0x333366, 0xc3c3e6]
+
+# Create a XYChart object of size 300 x 220 pixels. Use golden background color. Use
+# a 2 pixel 3D border.
+c = ChartDirector::XYChart.new(300, 220, ChartDirector::goldColor(), -1, 2)
+
+# Add a title box using 10 point Arial Bold font. Set the background color to
+# metallic blue (9999FF) Use a 1 pixel 3D border.
+c.addTitle("Daily Network Load", "arialbd.ttf", 10).setBackground(
+    ChartDirector::metalColor(0x9999ff), -1, 1)
+
+# Set the plotarea at (40, 40) and of 240 x 150 pixels in size
+c.setPlotArea(40, 40, 240, 150)
+
+# Add a multi-color bar chart layer using the given data and colors. Use a 1 pixel 3D
+# border for the bars.
+c.addBarLayer3(data, colors).setBorderColor(-1, 1)
+
+# Set the labels on the x axis.
+c.xAxis().setLabels(labels)
+
+# Output the chart
+c.makeChart("colorbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

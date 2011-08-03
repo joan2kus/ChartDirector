@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<Title>Stacked Radar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Stacked Radar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/stackradar.png">
+<br><br>
+This example demonstrates a stacked radar chart.<br><br>
+This example is similar to the previous <a href="multiradar.htm">Multi-Radar Chart</a> example, except the data are stacked before passing to ChartDirector.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/stackradar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class StackradarController &lt; ApplicationController
+
+    def index()
+        @title = "Stacked Radar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data0 = [100, 100, 100, 100, 100]
+        data1 = [90, 85, 85, 80, 70]
+        data2 = [80, 65, 65, 75, 45]
+
+        # The labels for the chart
+        labels = ["Population&lt;*br*&gt;&lt;*font=arial.ttf*&gt;6 millions",
+            "GDP&lt;*br*&gt;&lt;*font=arial.ttf*&gt;120 billions",
+            "Export&lt;*br*&gt;&lt;*font=arial.ttf*&gt;25 billions",
+            "Import&lt;*br*&gt;&lt;*font=arial.ttf*&gt;24 billions",
+            "Investments&lt;*br*&gt;&lt;*font=arial.ttf*&gt;20 billions"]
+
+        # Create a PolarChart object of size 480 x 460 pixels. Set background color to
+        # silver, with 1 pixel 3D border effect
+        c = ChartDirector::PolarChart.new(480, 460, ChartDirector::silverColor(),
+            0x000000, 1)
+
+        # Add a title to the chart using 15 pts Times Bold Italic font. The title text is
+        # white (ffffff) on a deep green (008000) background
+        c.addTitle("Economic Growth", "timesbi.ttf", 15, 0xffffff).setBackground(0x008000)
+
+        # Set plot area center at (240, 270), with 150 pixels radius
+        c.setPlotArea(240, 270, 150)
+
+        # Use 1 pixel width semi-transparent black (c0000000) lines as grid lines
+        c.setGridColor(0xc0000000, 1, 0xc0000000, 1)
+
+        # Add a legend box at top-center of plot area (240, 35) using horizontal layout.
+        # Use 10 pts Arial Bold font, with silver background and 1 pixel 3D border effect.
+        b = c.addLegend(240, 35, false, "arialbd.ttf", 10)
+        b.setAlignment(ChartDirector::TopCenter)
+        b.setBackground(ChartDirector::silverColor(), ChartDirector::Transparent, 1)
+
+        # Add area layers of different colors to represent the data
+        c.addAreaLayer(data0, 0xcc8880, "Year 2004")
+        c.addAreaLayer(data1, 0xffd080, "Year 1994")
+        c.addAreaLayer(data2, 0xa0bce0, "Year 1984")
+
+        # Set the labels to the angular axis as spokes.
+        c.angularAxis().setLabels(labels)
+
+        # Set radial axis from 0 - 100 with a tick every 20 units
+        c.radialAxis().setLinearScale(0, 100, 20)
+
+        # Just show the radial axis as a grid line. Hide the axis labels by setting the
+        # label color to Transparent
+        c.radialAxis().setColors(0xc0000000, ChartDirector::Transparent)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/stackradar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the chart
+data0 = [100, 100, 100, 100, 100]
+data1 = [90, 85, 85, 80, 70]
+data2 = [80, 65, 65, 75, 45]
+
+# The labels for the chart
+labels = ["Population&lt;*br*&gt;&lt;*font=arial.ttf*&gt;6 millions",
+    "GDP&lt;*br*&gt;&lt;*font=arial.ttf*&gt;120 billions",
+    "Export&lt;*br*&gt;&lt;*font=arial.ttf*&gt;25 billions",
+    "Import&lt;*br*&gt;&lt;*font=arial.ttf*&gt;24 billions",
+    "Investments&lt;*br*&gt;&lt;*font=arial.ttf*&gt;20 billions"]
+
+# Create a PolarChart object of size 480 x 460 pixels. Set background color to
+# silver, with 1 pixel 3D border effect
+c = ChartDirector::PolarChart.new(480, 460, ChartDirector::silverColor(), 0x000000, 1
+    )
+
+# Add a title to the chart using 15 pts Times Bold Italic font. The title text is
+# white (ffffff) on a deep green (008000) background
+c.addTitle("Economic Growth", "timesbi.ttf", 15, 0xffffff).setBackground(0x008000)
+
+# Set plot area center at (240, 270), with 150 pixels radius
+c.setPlotArea(240, 270, 150)
+
+# Use 1 pixel width semi-transparent black (c0000000) lines as grid lines
+c.setGridColor(0xc0000000, 1, 0xc0000000, 1)
+
+# Add a legend box at top-center of plot area (240, 35) using horizontal layout. Use
+# 10 pts Arial Bold font, with silver background and 1 pixel 3D border effect.
+b = c.addLegend(240, 35, false, "arialbd.ttf", 10)
+b.setAlignment(ChartDirector::TopCenter)
+b.setBackground(ChartDirector::silverColor(), ChartDirector::Transparent, 1)
+
+# Add area layers of different colors to represent the data
+c.addAreaLayer(data0, 0xcc8880, "Year 2004")
+c.addAreaLayer(data1, 0xffd080, "Year 1994")
+c.addAreaLayer(data2, 0xa0bce0, "Year 1984")
+
+# Set the labels to the angular axis as spokes.
+c.angularAxis().setLabels(labels)
+
+# Set radial axis from 0 - 100 with a tick every 20 units
+c.radialAxis().setLinearScale(0, 100, 20)
+
+# Just show the radial axis as a grid line. Hide the axis labels by setting the label
+# color to Transparent
+c.radialAxis().setColors(0xc0000000, ChartDirector::Transparent)
+
+# Output the chart
+c.makeChart("stackradar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,185 @@
+<HTML>
+<HEAD>
+<Title>Variable Width Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Variable Width Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/varwidthbar.png">
+<br><br>
+This example demonstrates a bar chart with variable bar widths.<br><br>
+ChartDirector does not really have a bar layer for variable width bars. However, an area layer can be used to create the same effect.<br><br>
+The variable width bars in this example are actually 4 areas, created by 4 area layers. The data set for each area layer consists of 4 points for the 4 corners of a bar.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/varwidthbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class VarwidthbarController &lt; ApplicationController
+
+    def index()
+        @title = "Variable Width Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data = [800, 600, 1000, 1400]
+        widths = [250, 500, 960, 460]
+        labels = ["Wind", "Hydro", "Coal", "Natural Gas"]
+
+        # The colors to use
+        colors = [0x00aa00, 0x66aaee, 0xee6622, 0xffbb00]
+
+        # Create a XYChart object of size 500 x 350 pixels
+        c = ChartDirector::XYChart.new(500, 350)
+
+        # Add a title to the chart using 15 pts Arial Italic font
+        c.addTitle("Energy Generation Breakdown", "ariali.ttf", 15)
+
+        # Set the plotarea at (60, 60) and of (chart_width - 90) x (chart_height - 100) in
+        # size. Use a vertical gradient color from light blue (f9f9ff) to sky blue
+        # (aaccff) as background. Set grid lines to white (ffffff).
+        plotAreaBgColor = c.linearGradientColor(0, 60, 0, c.getHeight() - 40, 0xaaccff,
+            0xf9fcff)
+        c.setPlotArea(60, 60, c.getWidth() - 90, c.getHeight() - 100, plotAreaBgColor, -1,
+            -1, 0xffffff)
+
+        # Add a legend box at (50, 30) using horizontal layout and transparent background.
+        c.addLegend(55, 30, false).setBackground(ChartDirector::Transparent)
+
+        # Add titles to x/y axes with 10 points Arial Bold font
+        c.xAxis().setTitle("Mega Watts", "arialbd.ttf", 10)
+        c.yAxis().setTitle("Cost per MWh (dollars)", "arialbd.ttf", 10)
+
+        # Set the x axis rounding to false, so that the x-axis will fit the data exactly
+        c.xAxis().setRounding(false, false)
+
+        # In ChartDirector, there is no bar layer that can have variable bar widths, but
+        # you may create a bar using an area layer. (A bar can be considered as the area
+        # under a rectangular outline.) So by using a loop to create one bar per area
+        # layer, we can achieve a variable width bar chart.
+
+        # starting position of current bar
+        currentX = 0
+
+        0.upto(data.length - 1) do |i|
+            # ending position of current bar
+            nextX = currentX + widths[i]
+
+            # outline of the bar
+            dataX = [currentX, currentX, nextX, nextX]
+            dataY = [0, data[i], data[i], 0]
+
+            # create the area layer to fill the bar
+            layer = c.addAreaLayer(dataY, colors[i], labels[i])
+            layer.setXData(dataX)
+
+            # the ending position becomes the starting position of the next bar
+            currentX = nextX
+        end
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/varwidthbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the chart
+data = [800, 600, 1000, 1400]
+widths = [250, 500, 960, 460]
+labels = ["Wind", "Hydro", "Coal", "Natural Gas"]
+
+# The colors to use
+colors = [0x00aa00, 0x66aaee, 0xee6622, 0xffbb00]
+
+# Create a XYChart object of size 500 x 350 pixels
+c = ChartDirector::XYChart.new(500, 350)
+
+# Add a title to the chart using 15 pts Arial Italic font
+c.addTitle("Energy Generation Breakdown", "ariali.ttf", 15)
+
+# Set the plotarea at (60, 60) and of (chart_width - 90) x (chart_height - 100) in
+# size. Use a vertical gradient color from light blue (f9f9ff) to sky blue (aaccff)
+# as background. Set grid lines to white (ffffff).
+plotAreaBgColor = c.linearGradientColor(0, 60, 0, c.getHeight() - 40, 0xaaccff,
+    0xf9fcff)
+c.setPlotArea(60, 60, c.getWidth() - 90, c.getHeight() - 100, plotAreaBgColor, -1,
+    -1, 0xffffff)
+
+# Add a legend box at (50, 30) using horizontal layout and transparent background.
+c.addLegend(55, 30, false).setBackground(ChartDirector::Transparent)
+
+# Add titles to x/y axes with 10 points Arial Bold font
+c.xAxis().setTitle("Mega Watts", "arialbd.ttf", 10)
+c.yAxis().setTitle("Cost per MWh (dollars)", "arialbd.ttf", 10)
+
+# Set the x axis rounding to false, so that the x-axis will fit the data exactly
+c.xAxis().setRounding(false, false)
+
+# In ChartDirector, there is no bar layer that can have variable bar widths, but you
+# may create a bar using an area layer. (A bar can be considered as the area under a
+# rectangular outline.) So by using a loop to create one bar per area layer, we can
+# achieve a variable width bar chart.
+
+# starting position of current bar
+currentX = 0
+
+0.upto(data.length - 1) do |i|
+    # ending position of current bar
+    nextX = currentX + widths[i]
+
+    # outline of the bar
+    dataX = [currentX, currentX, nextX, nextX]
+    dataY = [0, data[i], data[i], 0]
+
+    # create the area layer to fill the bar
+    layer = c.addAreaLayer(dataY, colors[i], labels[i])
+    layer.setXData(dataX)
+
+    # the ending position becomes the starting position of the next bar
+    currentX = nextX
+end
+
+# Output the chart
+c.makeChart("varwidthbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

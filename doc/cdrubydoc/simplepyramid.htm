@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<Title>Simple Pyramid Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Simple Pyramid Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/simplepyramid.png">
+<br><br>
+This example demonstrates the basic steps in creating pyramid charts.<br><br>
+<ul><li> Create a <a href="PyramidChart.htm">PyramidChart</a> object using <a href="PyramidChart.PyramidChart.htm">PyramidChart.PyramidChart</a>.<br><br>
+<li> Specify the center and radius of the pie using <a href="PyramidChart.setPyramidSize.htm">PyramidChart.setPyramidSize</a>.<br><br>
+<li> Specify the data used to draw the pie using <a href="PyramidChart.setData.htm">PyramidChart.setData</a>.<br><br>
+<li> Add labels at the center of the pyramid layers using <a href="PyramidChart.setCenterLabel.htm">PyramidChart.setCenterLabel</a><br><br>
+<li> Generate the chart using <a href="BaseChart.makeChart2.htm">BaseChart.makeChart2</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/simplepyramid_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class SimplepyramidController &lt; ApplicationController
+
+    def index()
+        @title = "Simple Pyramid Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pyramid chart
+        data = [156, 123, 211, 179]
+
+        # The labels for the pyramid chart
+        labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+        # Create a PyramidChart object of size 360 x 360 pixels
+        c = ChartDirector::PyramidChart.new(360, 360)
+
+        # Set the pyramid center at (180, 180), and width x height to 150 x 180 pixels
+        c.setPyramidSize(180, 180, 150, 300)
+
+        # Set the pyramid data and labels
+        c.setData(data, labels)
+
+        # Add labels at the center of the pyramid layers using Arial Bold font. The labels
+        # will have two lines showing the layer name and percentage.
+        c.setCenterLabel("{label}\n{percent}%", "arialbd.ttf")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/simplepyramid.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the pyramid chart
+data = [156, 123, 211, 179]
+
+# The labels for the pyramid chart
+labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+# Create a PyramidChart object of size 360 x 360 pixels
+c = ChartDirector::PyramidChart.new(360, 360)
+
+# Set the pyramid center at (180, 180), and width x height to 150 x 180 pixels
+c.setPyramidSize(180, 180, 150, 300)
+
+# Set the pyramid data and labels
+c.setData(data, labels)
+
+# Add labels at the center of the pyramid layers using Arial Bold font. The labels
+# will have two lines showing the layer name and percentage.
+c.setCenterLabel("{label}\n{percent}%", "arialbd.ttf")
+
+# Output the chart
+c.makeChart("simplepyramid.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

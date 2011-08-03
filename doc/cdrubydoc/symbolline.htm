@@ -1,0 +1,162 @@
+<HTML>
+<HEAD>
+<Title>Symbol Line Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Symbol Line Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/symbolline.png">
+<br><br>
+This example demonstrates using symbols to represent data points, and putting data labels on top of the symbols.<br><br>
+Note that in this example, the chart title background is not a solid color but a 1 x 2 pixels pattern.<br><br>
+<ul><li> Set background color and 3D border for the chart using <a href="XYChart.XYChart.htm">XYChart.XYChart</a>.<br><br>
+<li> Enable both vertical and horizontal grid lines using <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a>.<br><br>
+<li> Create a pattern color with a 1 x 2 pixel in-memory pattern using <a href="BaseChart.patternColor.htm">BaseChart.patternColor</a>. Set it as the background color of the title box using <a href="Box.setBackground.htm">Box.setBackground</a>.<br><br>
+<li> Enable symbols for the data points using <a href="DataSet.setDataSymbol.htm">DataSet.setDataSymbol</a>.<br><br>
+<li> Add labels on top of the symbols using <a href="Layer.setDataLabelFormat.htm">Layer.setDataLabelFormat</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/symbolline_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class SymbollineController &lt; ApplicationController
+
+    def index()
+        @title = "Symbol Line Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the line chart
+        data0 = [60.2, 51.7, 81.3, 48.6, 56.2, 68.9, 52.8]
+        data1 = [30.0, 32.7, 33.9, 29.5, 32.2, 28.4, 29.8]
+        labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+        # Create a XYChart object of size 300 x 180 pixels, with a pale yellow (0xffffc0)
+        # background, a black border, and 1 pixel 3D border effect.
+        c = ChartDirector::XYChart.new(300, 180, 0xffffc0, 0x000000, 1)
+
+        # Set the plotarea at (45, 35) and of size 240 x 120 pixels, with white
+        # background. Turn on both horizontal and vertical grid lines with light grey
+        # color (0xc0c0c0)
+        c.setPlotArea(45, 35, 240, 120, 0xffffff, -1, -1, 0xc0c0c0, -1)
+
+        # Add a legend box at (45, 12) (top of the chart) using horizontal layout and 8
+        # pts Arial font Set the background and border color to Transparent.
+        c.addLegend(45, 12, false, "", 8).setBackground(ChartDirector::Transparent)
+
+        # Add a title to the chart using 9 pts Arial Bold/white font. Use a 1 x 2 bitmap
+        # pattern as the background.
+        c.addTitle("Server Load (Jun 01 - Jun 07)", "arialbd.ttf", 9, 0xffffff
+            ).setBackground(c.patternColor([0x004000, 0x008000], 2))
+
+        # Set the y axis label format to nn%
+        c.yAxis().setLabelFormat("{value}%")
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Add a line layer to the chart
+        layer = c.addLineLayer()
+
+        # Add the first line. Plot the points with a 7 pixel square symbol
+        layer.addDataSet(data0, 0xcf4040, "Peak").setDataSymbol(
+            ChartDirector::SquareSymbol, 7)
+
+        # Add the second line. Plot the points with a 9 pixel dismond symbol
+        layer.addDataSet(data1, 0x40cf40, "Average").setDataSymbol(
+            ChartDirector::DiamondSymbol, 9)
+
+        # Enable data label on the data points. Set the label format to nn%.
+        layer.setDataLabelFormat("{value|0}%")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/symbolline.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the line chart
+data0 = [60.2, 51.7, 81.3, 48.6, 56.2, 68.9, 52.8]
+data1 = [30.0, 32.7, 33.9, 29.5, 32.2, 28.4, 29.8]
+labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+# Create a XYChart object of size 300 x 180 pixels, with a pale yellow (0xffffc0)
+# background, a black border, and 1 pixel 3D border effect.
+c = ChartDirector::XYChart.new(300, 180, 0xffffc0, 0x000000, 1)
+
+# Set the plotarea at (45, 35) and of size 240 x 120 pixels, with white background.
+# Turn on both horizontal and vertical grid lines with light grey color (0xc0c0c0)
+c.setPlotArea(45, 35, 240, 120, 0xffffff, -1, -1, 0xc0c0c0, -1)
+
+# Add a legend box at (45, 12) (top of the chart) using horizontal layout and 8 pts
+# Arial font Set the background and border color to Transparent.
+c.addLegend(45, 12, false, "", 8).setBackground(ChartDirector::Transparent)
+
+# Add a title to the chart using 9 pts Arial Bold/white font. Use a 1 x 2 bitmap
+# pattern as the background.
+c.addTitle("Server Load (Jun 01 - Jun 07)", "arialbd.ttf", 9, 0xffffff
+    ).setBackground(c.patternColor([0x004000, 0x008000], 2))
+
+# Set the y axis label format to nn%
+c.yAxis().setLabelFormat("{value}%")
+
+# Set the labels on the x axis
+c.xAxis().setLabels(labels)
+
+# Add a line layer to the chart
+layer = c.addLineLayer()
+
+# Add the first line. Plot the points with a 7 pixel square symbol
+layer.addDataSet(data0, 0xcf4040, "Peak").setDataSymbol(ChartDirector::SquareSymbol,
+    7)
+
+# Add the second line. Plot the points with a 9 pixel dismond symbol
+layer.addDataSet(data1, 0x40cf40, "Average").setDataSymbol(
+    ChartDirector::DiamondSymbol, 9)
+
+# Enable data label on the data points. Set the label format to nn%.
+layer.setDataLabelFormat("{value|0}%")
+
+# Output the chart
+c.makeChart("symbolline.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

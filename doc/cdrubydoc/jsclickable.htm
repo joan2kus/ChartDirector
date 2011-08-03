@@ -1,0 +1,222 @@
+<HTML>
+<HEAD>
+<Title>Javascript Clickable Charts</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Javascript Clickable Charts</p>
+<hr class="separator">
+<div class="content"><img src="images/jsclick_doc.png"><br><br>
+This example demonstrates using ChartDirector image maps to invoke client side Javascript functions.<br><br>
+In this example, a clickable area chart will be produced. Apart from responding to mouse clicks, detail information about the data points will be displayed in a dynamic HTML block when the mouse pointer moves over the chart. This is accomplished using "onMouseOver" and "onMouseOut" event handlers with client side Javascript.<br><br>
+The code for this example is listed below.<br><br>
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/jsclick_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class JsclickController &lt; ApplicationController
+    include ChartDirector::InteractiveChartSupport
+
+    def index()
+        @ctrl_file = File.expand_path(__FILE__)
+
+        #
+        # For demo purpose, we use hard coded data. In real life, the following data could
+        # come from a database.
+        #
+        revenue = [4500, 5600, 6300, 8000, 12000, 14000, 16000, 20000, 24000, 28000]
+        grossMargin = [62, 65, 63, 60, 55, 56, 57, 53, 52, 50]
+        backLog = [563, 683, 788, 941, 1334, 1522, 1644, 1905, 2222, 2544]
+        labels = ["1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004",
+            "2005"]
+
+        # Create a XYChart object of size 600 x 360 pixels
+        c = ChartDirector::XYChart.new(600, 360)
+
+        # Add a title to the chart using 18pts Times Bold Italic font
+        c.addTitle("Annual Revenue for Star Tech", "timesbi.ttf", 18)
+
+        # Set the plotarea at (60, 40) and of size 480 x 280 pixels. Use a vertical
+        # gradient color from light green (eeffee) to dark green (008800) as background.
+        # Set border and grid lines to white (ffffff).
+        c.setPlotArea(60, 40, 480, 280, c.linearGradientColor(60, 40, 60, 280, 0xeeffee,
+            0x008800), -1, 0xffffff, 0xffffff)
+
+        # Add a multi-color bar chart layer using the revenue data.
+        layer = c.addBarLayer3(revenue)
+
+        # Set cylinder bar shape
+        layer.setBarShape(ChartDirector::CircleShape)
+
+        # Add extra field to the bars. These fields are used for showing additional
+        # information.
+        layer.addExtraField2(grossMargin)
+        layer.addExtraField2(backLog)
+
+        # Set the labels on the x axis.
+        c.xAxis().setLabels(labels)
+
+        # In this example, we show the same scale using both axes
+        c.syncYAxis()
+
+        # Set the axis line to transparent
+        c.xAxis().setColors(ChartDirector::Transparent)
+        c.yAxis().setColors(ChartDirector::Transparent)
+        c.yAxis2().setColors(ChartDirector::Transparent)
+
+        # Set the axis label to using 8pt Arial Bold as font
+        c.yAxis().setLabelStyle("arialbd.ttf", 8)
+        c.yAxis2().setLabelStyle("arialbd.ttf", 8)
+        c.xAxis().setLabelStyle("arialbd.ttf", 8)
+
+        # Add title to the y axes
+        c.yAxis().setTitle("USD (millions)", "arialbd.ttf", 10)
+        c.yAxis2().setTitle("USD (millions)", "arialbd.ttf", 10)
+
+        # Create the image and save it in a temporary location
+        session["chart1"] = c.makeChart2(ChartDirector::PNG)
+
+        # Client side Javascript to show detail information "onmouseover"
+        showText = "onmouseover='showInfo(\"{xLabel}\", {value}, {field0}, {field1});' "
+
+        # Client side Javascript to hide detail information "onmouseout"
+        hideText = "onmouseout='showInfo(null);' "
+
+        # "title" attribute to show tool tip
+        toolTip = "title='{xLabel}: US$ {value|0}M'"
+
+        # Create an image map for the chart
+        @imageMap = c.getHTMLImageMap(url_for(:controller =&gt; "xystub"), "", sprintf(
+            "%s%s%s", showText, hideText, toolTip))
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/jsclick/index.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+&lt;script type="text/javascript"&gt;
+//
+//Client side script function to show and hide detail information.
+//
+function showInfo(year, revenue, grossMargin, backLog) {
+    var obj;
+    if (document.getElementById)
+        //IE 5.x or NS 6.x or above
+        obj = document.getElementById('detailInfo');
+    else
+        //IE 4.x
+        obj = document.all['detailInfo'];
+
+    if (!year)
+    {
+        obj.style.visibility = "hidden";
+        return;
+    }
+
+    var content = "&lt;table border='1' cellpadding='3' style='font-size:10pt; " +
+       "font-family:verdana; background-color:#CCCCFF' width='480'&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Year&lt;/b&gt;&lt;/td&gt;&lt;td width='300'&gt;" + year + "&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Revenue&lt;/b&gt;&lt;/td&gt;&lt;td&gt;US$ " + revenue + "M&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Gross Margin&lt;/b&gt;&lt;/td&gt;&lt;td&gt;" + grossMargin + "%&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Back Log&lt;/b&gt;&lt;/td&gt;&lt;td&gt;US$ " + backLog + "M&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;/table&gt;";
+
+    obj.innerHTML = content;
+    obj.style.visibility = "visible";
+}
+&lt;/script&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    Javascript Clickable Chart
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+&lt;div style="font-size:10pt; font-family:verdana; margin-bottom:20"&gt;
+    &lt;%= link_to "Source Code Listing",
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+&lt;img src="&lt;%= url_for(:action =&gt; 'get_session_data', :id =&gt; 'chart1',
+    :nocache =&gt; rand) %&gt;" border="0" usemap="#map1"&gt;
+&lt;map name="map1"&gt;
+&lt;%= @imageMap %&gt;
+&lt;/map&gt;
+&lt;div id="detailInfo" style="margin-left:60"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br>
+In the above code, the chart is created and saved in a session variable. An &lt;IMG&gt; tag is used in the view to retrieve the chart with the "get_session_data" action. The "get_session_data" action is implemented in the <a href="InteractiveChartSupport.htm">InteractiveChartSupport</a> class that is included as a mixin in the controller.<br><br>
+The image map for the chart is created using the following code:<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre># Client side Javascript to show detail information "onmouseover"
+showText = "onmouseover='showInfo(\"{xLabel}\", {value}, {field0}, {field1});' "
+
+# Client side Javascript to hide detail information "onmouseout"
+hideText = "onmouseout='showInfo(null);' "
+
+# "title" attribute to show tool tip
+toolTip = "title='{xLabel}: US$ {value|0}M'"
+
+# Create an image map for the chart
+@imageMap = c.getHTMLImageMap(url_for(:controller =&gt; "xystub"), "", sprintf(
+    "%s%s%s", showText, hideText, toolTip))</pre></div><br>
+Note that in additional to the "title" attribute for the "tool tip", the image map also includes event handlers "onmouseover" and "onmouseout". These event handles call the client side Javascript function "showInfo", which creates and hides the dynamic HTML block for displaying the additional information.<br><br>
+<div style="background-color:#cccccc;width:99%;padding:5px"><pre>&lt;script&gt;
+//
+//Client side script function to show and hide detail information.
+//
+function showInfo(year, revenue, grossMargin, backLog) {
+    var obj;
+    if (document.getElementById)
+        //IE 5.x or NS 6.x or above
+        obj = document.getElementById('detailInfo');
+    else
+        //IE 4.x
+        obj = document.all['detailInfo'];
+
+    if (!year)
+    {
+        obj.style.visibility = "hidden";
+        return;
+    }
+
+    var content = "&lt;table border='1' cellpadding='3' style='font-size:10pt; " +
+       "font-family:verdana; background-color:#CCCCFF' width='480'&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Year&lt;/b&gt;&lt;/td&gt;&lt;td width='300'&gt;" + year + "&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Revenue&lt;/b&gt;&lt;/td&gt;&lt;td&gt;US$ " + revenue + "M&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Gross Margin&lt;/b&gt;&lt;/td&gt;&lt;td&gt;" + grossMargin + "%&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;tr&gt;&lt;td&gt;&lt;b&gt;Back Log&lt;/b&gt;&lt;/td&gt;&lt;td&gt;US$ " + backLog + "M&lt;/td&gt;&lt;/tr&gt;";
+    content += "&lt;/table&gt;";
+
+    obj.innerHTML = content;
+    obj.style.visibility = "visible";
+}
+&lt;/script&gt;</pre></div><br>
+Note that in this example, we are displaying extra information, such as the "grossMargin" and "backLog" fields, which does not come from the x or y value of the bars. This is achieved by associated these fields as "extra fields" to the data items with <a href="Layer.addExtraField2.htm">Layer.addExtraField2</a>. These extra fields can then be represented using the template "{field<font color="#008800"><b><i>N</i></b></font>}", where "<font color="#008800"><b><i>N</i></b></font>" represents the field number. (The first field is 0, the second field is 1, etc.)<br><br>
+In addition to responding to mouse over and mouse out events, the chart is also clickable using the "xystub" controller as the handler.<br><br>
+For demo purpose, the "xystub" controller simply displays information on what is clicked. It's source code is as follows.<br><br>
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/xystub_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>class XystubController &lt; ApplicationController
+    def index()
+        @ctrl_file = File.expand_path(__FILE__)
+    end
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/xystub/index.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    Simple Clickable XY Chart Handler
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+&lt;div style="font-size:10pt; font-family:verdana; margin-bottom:20"&gt;
+    &lt;%= link_to "Source Code Listing",
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+&lt;div style="font-size:10pt; font-family:verdana;"&gt;
+&lt;b&gt;You have clicked on the following chart element :&lt;/b&gt;&lt;br /&gt;
+&lt;ul&gt;
+    &lt;li&gt;Data Set : &lt;%= params["dataSetName"] %&gt;&lt;/li&gt;
+    &lt;li&gt;X Position : &lt;%= params["x"] %&gt;&lt;/li&gt;
+    &lt;li&gt;X Label : &lt;%= params["xLabel"] %&gt;&lt;/li&gt;
+    &lt;li&gt;Data Value : &lt;%= params["value"] %&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table></div><br>
+<hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

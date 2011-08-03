@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<Title>Horizontal Linear Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Horizontal Linear Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/hlinearmeter.png">
+<br><br>
+This example demonstrates a simple horizontal linear meter.<br><br>
+A basic linear meter can be created using the following steps:<br><br>
+<ul><li> Create a <a href="LinearMeter.htm">LinearMeter</a> object using <a href="LinearMeter.LinearMeter.htm">LinearMeter.LinearMeter</a>. In this example, the background color is set to silver using <a href="ChartDirector.silverColor.htm">ChartDirector.silverColor</a> and the meter border is set to have a depressed effect.<br><br>
+<li> Specify the size of the meter scale region using <a href="LinearMeter.setMeter.htm">LinearMeter.setMeter</a> and the orientation of the scale labels. In this example, the scale labels are set at the top of the meter scale region. This automatically sets the meter as horizontal.<br><br>
+<li> Set the numeric scale of the meter using <a href="BaseMeter.setScale.htm">BaseMeter.setScale</a><br><br>
+<li> Add a pointer to the meter using <a href="BaseMeter.addPointer.htm">BaseMeter.addPointer</a></ul>
+In addition to the basic linear meter, this example demonstrates the following features:<br><br>
+<ul><li> Define zones on the meter using <a href="LinearMeter.addZone.htm">LinearMeter.addZone</a>. In this example, 3 zones (red, yellow and green) are defined.<br><br>
+<li> Add arbitrary text boxes to the meter using <a href="BaseChart.addText.htm">BaseChart.addText</a>. In this example, a text box is added to specify the meter as showing temperature, and another text box is added to display the data value as text.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/hlinearmeter_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class HlinearmeterController &lt; ApplicationController
+
+    def index()
+        @title = "Horizontal Linear Meter"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The value to display on the meter
+        value = 75.35
+
+        # Create an LinearMeter object of size 250 x 75 pixels, using silver background
+        # with a 2 pixel black 3D depressed border.
+        m = ChartDirector::LinearMeter.new(250, 75, ChartDirector::silverColor(), 0, -2)
+
+        # Set the scale region top-left corner at (15, 25), with size of 200 x 50 pixels.
+        # The scale labels are located on the top (implies horizontal meter)
+        m.setMeter(15, 25, 220, 20, ChartDirector::Top)
+
+        # Set meter scale from 0 - 100, with a tick every 10 units
+        m.setScale(0, 100, 10)
+
+        # Set 0 - 50 as green (99ff99) zone, 50 - 80 as yellow (ffff66) zone, and 80 - 100
+        # as red (ffcccc) zone
+        m.addZone(0, 50, 0x99ff99)
+        m.addZone(50, 80, 0xffff66)
+        m.addZone(80, 100, 0xffcccc)
+
+        # Add a blue (0000cc) pointer at the specified value
+        m.addPointer(value, 0x0000cc)
+
+        # Add a label at bottom-left (10, 68) using Arial Bold/8 pts/red (c00000)
+        m.addText(10, 68, "Temperature C", "arialbd.ttf", 8, 0xc00000,
+            ChartDirector::BottomLeft)
+
+        # Add a text box to show the value formatted to 2 decimal places at bottom right.
+        # Use white text on black background with a 1 pixel depressed 3D border.
+        m.addText(238, 70, m.formatValue(value, "2"), "arial.ttf", 8, 0xffffff,
+            ChartDirector::BottomRight).setBackground(0, 0, -1)
+
+        # Output the chart
+        send_data(m.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/hlinearmeter.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The value to display on the meter
+value = 75.35
+
+# Create an LinearMeter object of size 250 x 75 pixels, using silver background with
+# a 2 pixel black 3D depressed border.
+m = ChartDirector::LinearMeter.new(250, 75, ChartDirector::silverColor(), 0, -2)
+
+# Set the scale region top-left corner at (15, 25), with size of 200 x 50 pixels. The
+# scale labels are located on the top (implies horizontal meter)
+m.setMeter(15, 25, 220, 20, ChartDirector::Top)
+
+# Set meter scale from 0 - 100, with a tick every 10 units
+m.setScale(0, 100, 10)
+
+# Set 0 - 50 as green (99ff99) zone, 50 - 80 as yellow (ffff66) zone, and 80 - 100 as
+# red (ffcccc) zone
+m.addZone(0, 50, 0x99ff99)
+m.addZone(50, 80, 0xffff66)
+m.addZone(80, 100, 0xffcccc)
+
+# Add a blue (0000cc) pointer at the specified value
+m.addPointer(value, 0x0000cc)
+
+# Add a label at bottom-left (10, 68) using Arial Bold/8 pts/red (c00000)
+m.addText(10, 68, "Temperature C", "arialbd.ttf", 8, 0xc00000,
+    ChartDirector::BottomLeft)
+
+# Add a text box to show the value formatted to 2 decimal places at bottom right. Use
+# white text on black background with a 1 pixel depressed 3D border.
+m.addText(238, 70, m.formatValue(value, "2"), "arial.ttf", 8, 0xffffff,
+    ChartDirector::BottomRight).setBackground(0, 0, -1)
+
+# Output the chart
+m.makeChart("hlinearmeter.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,17 @@
+<HTML>
+<HEAD>
+<Title>Database Sample Code Overview</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Database Sample Code Overview</p>
+<hr class="separator">
+<div class="content">All ChartDirector database sample scripts described in this documentation are based on Ruby On Rails with a MySQL database. The sample scripts are provided for reference purposes. To actually run the sample scripts, you would need to set up your database system as follows:<br><br>
+<ul> <li>Set up "config/database.yml" in your Ruby On Rails application to MySQL as the database engine. (You may need to restart the application after this step.<br><br>
+<li>Import the table and records in "ChartDirector/db/sample.sql" into the database. </ul>
+The sample database that contains only one table called "revenues". The table stores the monthly revenue data for three business units - Hardware, Software and Services. It contains four columns as follows:<br><br>
+<table width="98%" border="1" cellpadding="5" cellspacing="0"> <tr><th width="200px">Column Name<th width="200px">Type <tr><td>TimeStamp<td>Date/Time <tr><td>Hardware<td>Number <tr><td>Software<td>Number <tr><td>Services<td>Number </table><br>
+Each row in the database table contains monthly revenues for the business units, where the date is stored in the "TimeStamp" column. The sample database contains rows from Jan 1990 to Dec 2001.</div><br>
+<hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<Title>Cone Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Cone Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/cone.png">
+<br><br>
+This example demonstrates using <a href="PyramidChart.setConeSize.htm">PyramidChart.setConeSize</a> to specify using a cone instead of a pyramid to represent the data.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/cone_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class ConeController &lt; ApplicationController
+
+    def index()
+        @title = "Cone Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pyramid chart
+        data = [156, 123, 211, 179]
+
+        # The labels for the pyramid chart
+        labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+        # The semi-transparent colors for the pyramid layers
+        colors = [0x60000088, 0x6066aaee, 0x60ffbb00, 0x60ee6622]
+
+        # Create a PyramidChart object of size 480 x 400 pixels
+        c = ChartDirector::PyramidChart.new(480, 400)
+
+        # Set the cone center at (280, 180), and width x height to 150 x 300 pixels
+        c.setConeSize(280, 180, 150, 300)
+
+        # Set the elevation to 15 degrees
+        c.setViewAngle(15)
+
+        # Set the pyramid data and labels
+        c.setData(data, labels)
+
+        # Set the layer colors to the given colors
+        c.setColors2(ChartDirector::DataColor, colors)
+
+        # Leave 1% gaps between layers
+        c.setLayerGap(0.01)
+
+        # Add labels at the left side of the pyramid layers using Arial Bold font. The
+        # labels will have 3 lines showing the layer name, value and percentage.
+        c.setLeftLabel("{label}\nUS ${value}K\n({percent}%)", "arialbd.ttf")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/cone.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the pyramid chart
+data = [156, 123, 211, 179]
+
+# The labels for the pyramid chart
+labels = ["Funds", "Bonds", "Stocks", "Cash"]
+
+# The semi-transparent colors for the pyramid layers
+colors = [0x60000088, 0x6066aaee, 0x60ffbb00, 0x60ee6622]
+
+# Create a PyramidChart object of size 480 x 400 pixels
+c = ChartDirector::PyramidChart.new(480, 400)
+
+# Set the cone center at (280, 180), and width x height to 150 x 300 pixels
+c.setConeSize(280, 180, 150, 300)
+
+# Set the elevation to 15 degrees
+c.setViewAngle(15)
+
+# Set the pyramid data and labels
+c.setData(data, labels)
+
+# Set the layer colors to the given colors
+c.setColors2(ChartDirector::DataColor, colors)
+
+# Leave 1% gaps between layers
+c.setLayerGap(0.01)
+
+# Add labels at the left side of the pyramid layers using Arial Bold font. The labels
+# will have 3 lines showing the layer name, value and percentage.
+c.setLeftLabel("{label}\nUS ${value}K\n({percent}%)", "arialbd.ttf")
+
+# Output the chart
+c.makeChart("cone.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

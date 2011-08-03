@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<Title>Binary Data Series</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Binary Data Series</p>
+<hr class="separator">
+<div class="content">
+<img src="images/binaryseries.png">
+<br><br>
+This example demonstrates a chart representing binary data series.<br><br>
+A binary data series is a series with elements that can only assume two values. In this example, 0 and 1 are used to represent the two values.<br><br>
+There are plenty of methods to represent binary data series in a chart. In this example, three methods are demonstrated.<br><br>
+<ul><li> The "Logic Line" is created by using a step line layer to represent the binary series as a step line. The step line layer is added using <a href="XYChart.addStepLineLayer.htm">XYChart.addStepLineLayer</a>.<br><br>
+<li> The "ON/OFF Filling" is created by using two complementary logic lines (that is, one line is always the reverse of the other line). An <a href="InterLineLayer.htm">InterLineLayer</a> is used to fill the region between the two lines, with the fill color dependent on which line is on top.<br><br>
+<li> The "ON Only Filling" is the same as the "ON/OFF Filling", except that one of the fill colors is set to <a href="ChartDirector.Transparent.htm">Transparent</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/binaryseries_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class BinaryseriesController &lt; ApplicationController
+
+    def index()
+        @title = "Binary Data Series"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        dataY = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1]
+        dataX = [Time.mktime(2008, 7, 1, 0, 0, 0), Time.mktime(2008, 7, 1, 2, 17, 2),
+            Time.mktime(2008, 7, 1, 8, 5, 30), Time.mktime(2008, 7, 1, 10, 54, 10),
+            Time.mktime(2008, 7, 1, 15, 40, 0), Time.mktime(2008, 7, 1, 18, 22, 20),
+            Time.mktime(2008, 7, 1, 22, 17, 14), Time.mktime(2008, 7, 2, 2, 55, 50),
+            Time.mktime(2008, 7, 2, 8, 17, 14), Time.mktime(2008, 7, 2, 11, 55, 50),
+            Time.mktime(2008, 7, 2, 13, 17, 14), Time.mktime(2008, 7, 2, 17, 55, 50),
+            Time.mktime(2008, 7, 2, 20, 17, 14), Time.mktime(2008, 7, 3, 0, 0, 0)]
+
+        # In this example, we only use position 1, 3, 5 for the data series. Positions 0,
+        # 2, 4, 6 are empty and serve as gaps.
+        labels = ["", "ON Only Filling", "",
+            "&lt;*font,color=cc2200*&gt;ON&lt;*/font*&gt; / &lt;*font,color=00aa22*&gt;OFF&lt;*/font*&gt; " \
+            "Filling", "", "Logic Line", ""]
+
+        # Create a XYChart object of size 600 x 180 pixels
+        c = ChartDirector::XYChart.new(600, 180)
+
+        # Add a title to the chart using 10 points Arial Bold font. Set top/bottom margins
+        # to 12 pixels.
+        title = c.addTitle("Binary Data Series Demonstration", "arialbd.ttf", 10)
+
+        # Tentatively set the plotarea at (100, 30) and of size 470 x 120 pixels. Use
+        # transparent border. Use grey (888888) solid line and light grey (ccccc) dotted
+        # line as major and minor vertical grid lines.
+        c.setPlotArea(100, 30, 470, 120, -1, -1, ChartDirector::Transparent).setGridColor(
+            ChartDirector::Transparent, 0x888888, ChartDirector::Transparent,
+            c.dashLineColor(0xcccccc, ChartDirector::DotLine))
+
+        # Set axes to transparent
+        c.xAxis().setColors(ChartDirector::Transparent)
+        c.yAxis().setColors(ChartDirector::Transparent)
+
+        # Set the y axis labels
+        c.yAxis().setLabels(labels)
+
+        # Set y-axis label style to 8pts Arial Bold
+        c.yAxis().setLabelStyle("arialbd.ttf", 8)
+
+        # Set x-axis major and minor tick density to 50 and 5 pixels. ChartDirector
+        # auto-scaling will use this as the guideline when putting ticks on the x-axis.
+        c.xAxis().setTickDensity(50, 5)
+
+        # Use "&lt;*font=Arial Bold*&gt;{value|mmm dd}" for the first label of an hour, and
+        # "{value|hh:nn}" for all other labels.
+        c.xAxis().setMultiFormat(ChartDirector::StartOfDayFilter(),
+            "&lt;*font=arialbd.ttf*&gt;{value|mmm dd}", ChartDirector::AllPassFilter(),
+            "{value|hh:nn}")
+
+        #
+        # A Logic Line can be achieved using a StepLineLayer in ChartDirector
+        #
+
+        # Shift the data by 4.5, so instead of 0 - 1, it is now 4.5 to 5.5, or fluctuate
+        # around the y = 5 (Logic Line label) position.
+        shiftedLine0 = ChartDirector::ArrayMath.new(dataY).add(4.5).result()
+
+        # Add step lines using the original and the reversed data
+        layer0 = c.addStepLineLayer(shiftedLine0, 255)
+        layer0.setXData(dataX)
+
+        #
+        # To perform ON/OFF filling, we draw the logic line, and its reverse, and fill the
+        # region in between
+        #
+
+        # Shift the data by 2.5, so instead of 0 - 1, it is now 2.5 to 3.5, or fluctuate
+        # around the y = 3 (ON/OFF Filing label) position.
+        shiftedLine1 = ChartDirector::ArrayMath.new(dataY).add(2.5).result()
+        # Reverse the data, so the 0 becomes 1 and 1 becomes 0, and shift it as well.
+        reverseShiftedLine1 = ChartDirector::ArrayMath.new(dataY).mul(-1).add(3.5).result(
+            )
+
+        # Add step lines using the original and the reversed data
+        layer1 = c.addStepLineLayer(shiftedLine1, ChartDirector::Transparent)
+        layer1.addDataSet(reverseShiftedLine1, ChartDirector::Transparent)
+        layer1.setXData(dataX)
+
+        # Fill the region between the two step lines with green (00aa22) or red (cc2200),
+        # depending on whether the original or the reserve is higher.
+        c.addInterLineLayer(layer1.getLine(0), layer1.getLine(1), 0x00aa22, 0xcc2200)
+
+        #
+        # The ON Only filling is the same as ON/OFF filling, except the OFF filling color
+        # is transparent
+        #
+
+        # Shift the data by 0.5, so instead of 0 - 1, it is now 0.5 to 1.5, or fluctuate
+        # around the y = 1 (ON Only Filing label) position.
+        shiftedLine2 = ChartDirector::ArrayMath.new(dataY).add(0.5).result()
+        # Reverse the data, so the 0 becomes 1 and 1 becomes 0, and shift it as well.
+        reverseShiftedLine2 = ChartDirector::ArrayMath.new(dataY).mul(-1).add(1.5).result(
+            )
+
+        # Add step lines using the original and the reversed data
+        layer2 = c.addStepLineLayer(shiftedLine2, ChartDirector::Transparent)
+        layer2.addDataSet(reverseShiftedLine2, ChartDirector::Transparent)
+        layer2.setXData(dataX)
+
+        # Fill the region between the two step lines with green (00aa22) or transparent,
+        # depending on whether the original or the reserve is higher.
+        c.addInterLineLayer(layer2.getLine(0), layer2.getLine(1), 0x00aa22,
+            ChartDirector::Transparent)
+
+        # Adjust the plot area size, such that the bounding box (inclusive of axes) is 10
+        # pixels from the left edge, 10 pixels  below the title, 30 pixels from the right
+        # edge, and 10 pixels above the bottom edge.
+        c.packPlotArea(10, title.getHeight() + 10, c.getWidth() - 30, c.getHeight() - 10)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/binaryseries.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the chart
+dataY = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1]
+dataX = [Time.mktime(2008, 7, 1, 0, 0, 0), Time.mktime(2008, 7, 1, 2, 17, 2),
+    Time.mktime(2008, 7, 1, 8, 5, 30), Time.mktime(2008, 7, 1, 10, 54, 10),
+    Time.mktime(2008, 7, 1, 15, 40, 0), Time.mktime(2008, 7, 1, 18, 22, 20),
+    Time.mktime(2008, 7, 1, 22, 17, 14), Time.mktime(2008, 7, 2, 2, 55, 50),
+    Time.mktime(2008, 7, 2, 8, 17, 14), Time.mktime(2008, 7, 2, 11, 55, 50),
+    Time.mktime(2008, 7, 2, 13, 17, 14), Time.mktime(2008, 7, 2, 17, 55, 50),
+    Time.mktime(2008, 7, 2, 20, 17, 14), Time.mktime(2008, 7, 3, 0, 0, 0)]
+
+# In this example, we only use position 1, 3, 5 for the data series. Positions 0, 2,
+# 4, 6 are empty and serve as gaps.
+labels = ["", "ON Only Filling", "",
+    "&lt;*font,color=cc2200*&gt;ON&lt;*/font*&gt; / &lt;*font,color=00aa22*&gt;OFF&lt;*/font*&gt; Filling",
+    "", "Logic Line", ""]
+
+# Create a XYChart object of size 600 x 180 pixels
+c = ChartDirector::XYChart.new(600, 180)
+
+# Add a title to the chart using 10 points Arial Bold font. Set top/bottom margins to
+# 12 pixels.
+title = c.addTitle("Binary Data Series Demonstration", "arialbd.ttf", 10)
+
+# Tentatively set the plotarea at (100, 30) and of size 470 x 120 pixels. Use
+# transparent border. Use grey (888888) solid line and light grey (ccccc) dotted line
+# as major and minor vertical grid lines.
+c.setPlotArea(100, 30, 470, 120, -1, -1, ChartDirector::Transparent).setGridColor(
+    ChartDirector::Transparent, 0x888888, ChartDirector::Transparent,
+    c.dashLineColor(0xcccccc, ChartDirector::DotLine))
+
+# Set axes to transparent
+c.xAxis().setColors(ChartDirector::Transparent)
+c.yAxis().setColors(ChartDirector::Transparent)
+
+# Set the y axis labels
+c.yAxis().setLabels(labels)
+
+# Set y-axis label style to 8pts Arial Bold
+c.yAxis().setLabelStyle("arialbd.ttf", 8)
+
+# Set x-axis major and minor tick density to 50 and 5 pixels. ChartDirector
+# auto-scaling will use this as the guideline when putting ticks on the x-axis.
+c.xAxis().setTickDensity(50, 5)
+
+# Use "&lt;*font=Arial Bold*&gt;{value|mmm dd}" for the first label of an hour, and
+# "{value|hh:nn}" for all other labels.
+c.xAxis().setMultiFormat(ChartDirector::StartOfDayFilter(),
+    "&lt;*font=arialbd.ttf*&gt;{value|mmm dd}", ChartDirector::AllPassFilter(),
+    "{value|hh:nn}")
+
+#
+# A Logic Line can be achieved using a StepLineLayer in ChartDirector
+#
+
+# Shift the data by 4.5, so instead of 0 - 1, it is now 4.5 to 5.5, or fluctuate
+# around the y = 5 (Logic Line label) position.
+shiftedLine0 = ChartDirector::ArrayMath.new(dataY).add(4.5).result()
+
+# Add step lines using the original and the reversed data
+layer0 = c.addStepLineLayer(shiftedLine0, 255)
+layer0.setXData(dataX)
+
+#
+# To perform ON/OFF filling, we draw the logic line, and its reverse, and fill the
+# region in between
+#
+
+# Shift the data by 2.5, so instead of 0 - 1, it is now 2.5 to 3.5, or fluctuate
+# around the y = 3 (ON/OFF Filing label) position.
+shiftedLine1 = ChartDirector::ArrayMath.new(dataY).add(2.5).result()
+# Reverse the data, so the 0 becomes 1 and 1 becomes 0, and shift it as well.
+reverseShiftedLine1 = ChartDirector::ArrayMath.new(dataY).mul(-1).add(3.5).result()
+
+# Add step lines using the original and the reversed data
+layer1 = c.addStepLineLayer(shiftedLine1, ChartDirector::Transparent)
+layer1.addDataSet(reverseShiftedLine1, ChartDirector::Transparent)
+layer1.setXData(dataX)
+
+# Fill the region between the two step lines with green (00aa22) or red (cc2200),
+# depending on whether the original or the reserve is higher.
+c.addInterLineLayer(layer1.getLine(0), layer1.getLine(1), 0x00aa22, 0xcc2200)
+
+#
+# The ON Only filling is the same as ON/OFF filling, except the OFF filling color is
+# transparent
+#
+
+# Shift the data by 0.5, so instead of 0 - 1, it is now 0.5 to 1.5, or fluctuate
+# around the y = 1 (ON Only Filing label) position.
+shiftedLine2 = ChartDirector::ArrayMath.new(dataY).add(0.5).result()
+# Reverse the data, so the 0 becomes 1 and 1 becomes 0, and shift it as well.
+reverseShiftedLine2 = ChartDirector::ArrayMath.new(dataY).mul(-1).add(1.5).result()
+
+# Add step lines using the original and the reversed data
+layer2 = c.addStepLineLayer(shiftedLine2, ChartDirector::Transparent)
+layer2.addDataSet(reverseShiftedLine2, ChartDirector::Transparent)
+layer2.setXData(dataX)
+
+# Fill the region between the two step lines with green (00aa22) or transparent,
+# depending on whether the original or the reserve is higher.
+c.addInterLineLayer(layer2.getLine(0), layer2.getLine(1), 0x00aa22,
+    ChartDirector::Transparent)
+
+# Adjust the plot area size, such that the bounding box (inclusive of axes) is 10
+# pixels from the left edge, 10 pixels  below the title, 30 pixels from the right
+# edge, and 10 pixels above the bottom edge.
+c.packPlotArea(10, title.getHeight() + 10, c.getWidth() - 30, c.getHeight() - 10)
+
+# Output the chart
+c.makeChart("binaryseries.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<Title>BaseChart.makeTmpFile</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1"><a href="BaseChart.htm">BaseChart</a>.makeTmpFile</p>
+<hr class="separator">
+<p class="heading2a">Usage</p>
+<div class="content">
+makeTmpFile(dirname [, imageFormat [, lifeTime ]])
+</div>
+<p class="heading2">Description</p>
+<div class="content">
+Generates the chart as an image and save it to a temporary file, and automatically remove old files.<br><br>
+The makeTmpFile method creates the temporary file in the directory specified by <b>dirname</b>. To avoid building up of too many temporary files, it will automatically remove files older than a certain life time (default 600 seconds) in that directory.<br><br>
+Note that makeTmpFile expects <b>dirname</b> be a file system path, not a URL path. For example, the directory "/tmp/tmpcharts" means a directory at the root of the hard disk, not the root of the web document directory. Also, a relative path like "tmpcharts" or "../tmpcharts" is relative to the "current working directory" of the file system, which may not be the same as the "current script directory". It depends on the brand and configuration of the web server. To avoid uncertainties, it is not suggested to use relative paths.<br><br>
+If makeTmpFile is unsuccessful, an empty string will be returned. In this case, please check that the temporary directory exists, and is readable and writable by the web server anonymous user.<br><br>
+It is highly recommended you use a dedicated directory for storing temporary files created by ChartDirector. This is to avoid makeTmpFile from accidentally removing old files belonging to other applications.<br><br>
+<b>Note</b>: To output true vector graphics in SVG or SVGZ format, please ensure <a href="BaseChart.enableVectorOutput.htm">BaseChart.enableVectorOutput</a> is called immediately after creating the BaseChart object. Otherwise the output will be a bitmap image embedded in SVG or SVGZ.
+</div>
+<p class="heading2">Arguments</p>
+<div class="content">
+<table border="1" cellpadding="5" cellspacing="0" width="98%"> 
+<tr>
+<th width="19%">Argument</th><th width="19%">Default</th><th width="60%">Description</th>
+</tr>
+<tr>
+<td>dirname</td><td>(Mandatory)</td><td>The directory to store the temporary file and to remove old files.</td></tr><tr><td>imageFormat</td><td><a href="ChartDirector.PNG.htm">PNG</a></td><td>A constant representing the format of the image. Must be one of the predefined constants <a href="ChartDirector.PNG.htm">PNG</a>, <a href="ChartDirector.JPG.htm">JPG</a>, <a href="ChartDirector.GIF.htm">GIF</a>, <a href="ChartDirector.BMP.htm">BMP</a>, <a href="ChartDirector.WMP.htm">WMP</a>, <a href="ChartDirector.SVG.htm">SVG</a> or <a href="ChartDirector.SVGZ.htm">SVGZ</a>.</td></tr><tr><td>lifeTime</td><td>600</td><td>The life time of files in seconds. Older files will be deleted. A negative value disables automatic temporary file removal.</td>
+</tr>
+</table>
+</div>
+<p class="heading2">Return Value</p>
+<div class="content">
+The temporary file name (not including the path), or an empty string in case of failure.
+</div>
+<br><hr class="separator">
+<div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

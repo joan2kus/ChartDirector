@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<Title>Y-Axis Scaling</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Y-Axis Scaling</p>
+<hr class="separator">
+<div class="content">
+<img src="images/axisscale0.png">&nbsp;&nbsp;<img src="images/axisscale1.png">&nbsp;&nbsp;<img src="images/axisscale2.png">&nbsp;&nbsp;<img src="images/axisscale3.png">&nbsp;&nbsp;<img src="images/axisscale4.png">
+<br><br>
+This example demonstrates how to control auto-scaling.<br><br>
+By default, ChartDirector auto-scales all axes. The <a href="Axis.setAutoScale.htm">Axis.setAutoScale</a> method controls the top extension, bottom extension and the zero affinity parameters that ChartDirector uses during auto-scaling. The first two parameters determine the amount of top and bottom margins to reserve during auto-scaling, while the last parameter determines when the axis should start from the origin (0).<br><br>
+The first 3 charts demonstrate the effects of different top/bottom extensions.<br><br>
+The 4th chart demonstrates that one could exclude a segment on the ends of an axis from scaling using <a href="Axis.setMargin.htm">Axis.setMargin</a>.<br><br>
+The 5th chart demonstrates manual scaling instead of auto-scaling. In manual scaling, the axis scale is explicitly provided by using <a href="Axis.setLinearScale.htm">Axis.setLinearScale</a>, <a href="Axis.setLinearScale2.htm">Axis.setLinearScale2</a>, <a href="Axis.setLogScale.htm">Axis.setLogScale</a>, <a href="Axis.setLogScale2.htm">Axis.setLogScale2</a>, <a href="Axis.setDateScale.htm">Axis.setDateScale</a> or <a href="Axis.setDateScale2.htm">Axis.setDateScale2</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/axisscale_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class AxisscaleController &lt; ApplicationController
+
+    def index()
+        @title = "Y-Axis Scaling"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 5
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data = [5.5, 3.5, -3.7, 1.7, -1.4, 3.3]
+        labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+
+        # Create a XYChart object of size 200 x 190 pixels
+        c = ChartDirector::XYChart.new(200, 190)
+
+        # Set the plot area at (30, 20) and of size 140 x 140 pixels
+        c.setPlotArea(30, 20, 140, 140)
+
+        # Configure the axis as according to the input parameter
+        if params["img"] == "0"
+            c.addTitle("No Axis Extension", "arial.ttf", 8)
+        elsif params["img"] == "1"
+            c.addTitle("Top/Bottom Extensions = 0/0", "arial.ttf", 8)
+            # Reserve 20% margin at top of plot area when auto-scaling
+            c.yAxis().setAutoScale(0, 0)
+        elsif params["img"] == "2"
+            c.addTitle("Top/Bottom Extensions = 0.2/0.2", "arial.ttf", 8)
+            # Reserve 20% margin at top and bottom of plot area when auto-scaling
+            c.yAxis().setAutoScale(0.2, 0.2)
+        elsif params["img"] == "3"
+            c.addTitle("Axis Top Margin = 15", "arial.ttf", 8)
+            # Reserve 15 pixels at top of plot area
+            c.yAxis().setMargin(15)
+        else
+            c.addTitle("Manual Scale -5 to 10", "arial.ttf", 8)
+            # Set the y axis to scale from -5 to 10, with ticks every 5 units
+            c.yAxis().setLinearScale(-5, 10, 5)
+        end
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+        # bars.
+        c.addBarLayer3(data).setBorderColor(-1, 1)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/axisscale.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The data for the chart
+    data = [5.5, 3.5, -3.7, 1.7, -1.4, 3.3]
+    labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+
+    # Create a XYChart object of size 200 x 190 pixels
+    c = ChartDirector::XYChart.new(200, 190)
+
+    # Set the plot area at (30, 20) and of size 140 x 140 pixels
+    c.setPlotArea(30, 20, 140, 140)
+
+    # Configure the axis as according to the input parameter
+    if img == "0"
+        c.addTitle("No Axis Extension", "arial.ttf", 8)
+    elsif img == "1"
+        c.addTitle("Top/Bottom Extensions = 0/0", "arial.ttf", 8)
+        # Reserve 20% margin at top of plot area when auto-scaling
+        c.yAxis().setAutoScale(0, 0)
+    elsif img == "2"
+        c.addTitle("Top/Bottom Extensions = 0.2/0.2", "arial.ttf", 8)
+        # Reserve 20% margin at top and bottom of plot area when auto-scaling
+        c.yAxis().setAutoScale(0.2, 0.2)
+    elsif img == "3"
+        c.addTitle("Axis Top Margin = 15", "arial.ttf", 8)
+        # Reserve 15 pixels at top of plot area
+        c.yAxis().setMargin(15)
+    else
+        c.addTitle("Manual Scale -5 to 10", "arial.ttf", 8)
+        # Set the y axis to scale from -5 to 10, with ticks every 5 units
+        c.yAxis().setLinearScale(-5, 10, 5)
+    end
+
+    # Set the labels on the x axis
+    c.xAxis().setLabels(labels)
+
+    # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+    # bars.
+    c.addBarLayer3(data).setBorderColor(-1, 1)
+
+    # Output the chart
+    c.makeChart("axisscale%s.png" % img)
+end
+
+createChart("0")
+createChart("1")
+createChart("2")
+createChart("3")
+createChart("4")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

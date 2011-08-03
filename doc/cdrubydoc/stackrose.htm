@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<Title>Stacked Rose Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Stacked Rose Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/stackrose.png">
+<br><br>
+This example demonstrates how to create a stacked rose chart.<br><br>
+This example employs the same approach as the previous <a href="rose.htm">Simple Rose Chart</a> example. It creates a <a href="PolarChart.htm">PolarChart</a> object as the graph paper, and adding sector zones on it using <a href="AngularAxis.addZone.htm">AngularAxis.addZone</a>. A transparent line layer is used for enabling auto-scaling.<br><br>
+In this example, multiple sectors are added for each angular direction, creating a "stacked" effect.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/stackrose_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class StackroseController &lt; ApplicationController
+
+    def index()
+        @title = "Stacked Rose Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # Data for the chart
+        data0 = [5, 3, 10, 4, 3, 5, 2, 5]
+        data1 = [12, 6, 17, 6, 7, 9, 4, 7]
+        data2 = [17, 7, 22, 7, 18, 13, 5, 11]
+
+        angles = [0, 45, 90, 135, 180, 225, 270, 315]
+        labels = ["North", "North\nEast", "East", "South\nEast", "South", "South\nWest",
+            "West", "North\nWest"]
+
+        # Create a PolarChart object of size 460 x 500 pixels, with a grey (e0e0e0)
+        # background and a 1 pixel 3D border
+        c = ChartDirector::PolarChart.new(460, 500, 0xe0e0e0, 0x000000, 1)
+
+        # Add a title to the chart at the top left corner using 15pts Arial Bold Italic
+        # font. Use white text on deep blue background.
+        c.addTitle("Wind Direction", "arialbi.ttf", 15, 0xffffff).setBackground(0x000080)
+
+        legendBox = c.addLegend(230, 35, false, "arialbd.ttf", 9)
+        legendBox.setAlignment(ChartDirector::TopCenter)
+        legendBox.setBackground(ChartDirector::Transparent, ChartDirector::Transparent, 1)
+
+        legendBox.addKey("5 m/s or above", 0xff3333)
+        legendBox.addKey("1 - 5 m/s", 0x33ff33)
+        legendBox.addKey("less than 1 m/s", 0x3333ff)
+
+        # Set plot area center at (230, 280) with radius 180 pixels and white background
+        c.setPlotArea(230, 280, 180, 0xffffff)
+
+        # Set the grid style to circular grid
+        c.setGridStyle(false)
+
+        # Set angular axis as 0 - 360, with a spoke every 30 units
+        c.angularAxis().setLinearScale2(0, 360, labels)
+
+        0.upto(angles.length - 1) do |i|
+            c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, 0, data0[i], 0x3333ff,
+                0)
+            c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, data0[i], data1[i],
+                0x33ff33, 0)
+            c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, data1[i], data2[i],
+                0xff3333, 0)
+        end
+
+        # Add an Transparent invisible layer to ensure the axis is auto-scaled using the
+        # data
+        c.addLineLayer(data2, ChartDirector::Transparent)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/stackrose.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# Data for the chart
+data0 = [5, 3, 10, 4, 3, 5, 2, 5]
+data1 = [12, 6, 17, 6, 7, 9, 4, 7]
+data2 = [17, 7, 22, 7, 18, 13, 5, 11]
+
+angles = [0, 45, 90, 135, 180, 225, 270, 315]
+labels = ["North", "North\nEast", "East", "South\nEast", "South", "South\nWest",
+    "West", "North\nWest"]
+
+# Create a PolarChart object of size 460 x 500 pixels, with a grey (e0e0e0)
+# background and a 1 pixel 3D border
+c = ChartDirector::PolarChart.new(460, 500, 0xe0e0e0, 0x000000, 1)
+
+# Add a title to the chart at the top left corner using 15pts Arial Bold Italic font.
+# Use white text on deep blue background.
+c.addTitle("Wind Direction", "arialbi.ttf", 15, 0xffffff).setBackground(0x000080)
+
+legendBox = c.addLegend(230, 35, false, "arialbd.ttf", 9)
+legendBox.setAlignment(ChartDirector::TopCenter)
+legendBox.setBackground(ChartDirector::Transparent, ChartDirector::Transparent, 1)
+
+legendBox.addKey("5 m/s or above", 0xff3333)
+legendBox.addKey("1 - 5 m/s", 0x33ff33)
+legendBox.addKey("less than 1 m/s", 0x3333ff)
+
+# Set plot area center at (230, 280) with radius 180 pixels and white background
+c.setPlotArea(230, 280, 180, 0xffffff)
+
+# Set the grid style to circular grid
+c.setGridStyle(false)
+
+# Set angular axis as 0 - 360, with a spoke every 30 units
+c.angularAxis().setLinearScale2(0, 360, labels)
+
+0.upto(angles.length - 1) do |i|
+    c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, 0, data0[i], 0x3333ff, 0)
+    c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, data0[i], data1[i],
+        0x33ff33, 0)
+    c.angularAxis().addZone(angles[i] - 10, angles[i] + 10, data1[i], data2[i],
+        0xff3333, 0)
+end
+
+# Add an Transparent invisible layer to ensure the axis is auto-scaled using the data
+c.addLineLayer(data2, ChartDirector::Transparent)
+
+# Output the chart
+c.makeChart("stackrose.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

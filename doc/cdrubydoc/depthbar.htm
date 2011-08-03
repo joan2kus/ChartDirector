@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<Title>Depth Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Depth Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/depthbar.png">
+<br><br>
+This example demonstrates using multiple bar layers with semi-transparent colors to create a depth bar chart.<br><br>
+ChartDirector allows an XYChart to containing multiple layers of the same or different types. In this example, all layers are 3D bar layers. The bars are drawn in semi-transparent colors to avoid the bars on the front hiding the bars at the back.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/depthbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class DepthbarController &lt; ApplicationController
+
+    def index()
+        @title = "Depth Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data0 = [100, 125, 245, 147, 67]
+        data1 = [85, 156, 179, 211, 123]
+        data2 = [97, 87, 56, 267, 157]
+
+        # The labels for the bar chart
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 500 x 320 pixels
+        c = ChartDirector::XYChart.new(500, 320)
+
+        # Set the plotarea at (100, 40) and of size 280 x 240 pixels
+        c.setPlotArea(100, 40, 280, 240)
+
+        # Add a legend box at (405, 100)
+        c.addLegend(405, 100)
+
+        # Add a title to the chart
+        c.addTitle("Weekday Network Load")
+
+        # Add a title to the y axis. Draw the title upright (font angle = 0)
+        c.yAxis().setTitle("Average\nWorkload\n(MBytes\nPer Hour)").setFontAngle(0)
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Add three bar layers, each representing one data set. The bars are drawn in
+        # semi-transparent colors.
+        c.addBarLayer(data0, 0x808080ff, "Server # 1", 5)
+        c.addBarLayer(data1, 0x80ff0000, "Server # 2", 5)
+        c.addBarLayer(data2, 0x8000ff00, "Server # 3", 5)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/depthbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data0 = [100, 125, 245, 147, 67]
+data1 = [85, 156, 179, 211, 123]
+data2 = [97, 87, 56, 267, 157]
+
+# The labels for the bar chart
+labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+# Create a XYChart object of size 500 x 320 pixels
+c = ChartDirector::XYChart.new(500, 320)
+
+# Set the plotarea at (100, 40) and of size 280 x 240 pixels
+c.setPlotArea(100, 40, 280, 240)
+
+# Add a legend box at (405, 100)
+c.addLegend(405, 100)
+
+# Add a title to the chart
+c.addTitle("Weekday Network Load")
+
+# Add a title to the y axis. Draw the title upright (font angle = 0)
+c.yAxis().setTitle("Average\nWorkload\n(MBytes\nPer Hour)").setFontAngle(0)
+
+# Set the labels on the x axis
+c.xAxis().setLabels(labels)
+
+# Add three bar layers, each representing one data set. The bars are drawn in
+# semi-transparent colors.
+c.addBarLayer(data0, 0x808080ff, "Server # 1", 5)
+c.addBarLayer(data1, 0x80ff0000, "Server # 2", 5)
+c.addBarLayer(data2, 0x8000ff00, "Server # 3", 5)
+
+# Output the chart
+c.makeChart("depthbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

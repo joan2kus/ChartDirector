@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<Title>Log Scale Axis</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Log Scale Axis</p>
+<hr class="separator">
+<div class="content">
+<img src="images/logaxis0.png">&nbsp;&nbsp;<img src="images/logaxis1.png">
+<br><br>
+This example demonstrates using a log scale axis versus a linear scale axis.<br><br>
+In ChartDirector, log scale axis can be configured using <a href="Axis.setLogScale.htm">Axis.setLogScale</a>, <a href="Axis.setLogScale2.htm">Axis.setLogScale2</a> or <a href="Axis.setLogScale3.htm">Axis.setLogScale3</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/logaxis_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class LogaxisController &lt; ApplicationController
+
+    def index()
+        @title = "Log Scale Axis"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 2
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data = [100, 125, 260, 147, 67]
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 200 x 180 pixels
+        c = ChartDirector::XYChart.new(200, 180)
+
+        # Set the plot area at (30, 10) and of size 140 x 130 pixels
+        c.setPlotArea(30, 10, 140, 130)
+
+        # Ise log scale axis if required
+        if params["img"] == "1"
+            c.yAxis().setLogScale3()
+        end
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+        # bars.
+        c.addBarLayer3(data).setBorderColor(-1, 1)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/logaxis.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The data for the chart
+    data = [100, 125, 260, 147, 67]
+    labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+    # Create a XYChart object of size 200 x 180 pixels
+    c = ChartDirector::XYChart.new(200, 180)
+
+    # Set the plot area at (30, 10) and of size 140 x 130 pixels
+    c.setPlotArea(30, 10, 140, 130)
+
+    # Ise log scale axis if required
+    if img == "1"
+        c.yAxis().setLogScale3()
+    end
+
+    # Set the labels on the x axis
+    c.xAxis().setLabels(labels)
+
+    # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+    # bars.
+    c.addBarLayer3(data).setBorderColor(-1, 1)
+
+    # Output the chart
+    c.makeChart("logaxis%s.png" % img)
+end
+
+createChart("0")
+createChart("1")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

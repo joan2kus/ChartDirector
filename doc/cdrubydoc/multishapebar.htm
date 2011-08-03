@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<Title>Multi-Shape Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Multi-Shape Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/multishapebar.png">
+<br><br>
+This example demonstrates a multi-bar chart in which each data set has a different bar shape.<br><br>
+The bar shapes are specified using <a href="BarLayer.setBarShape.htm">BarLayer.setBarShape</a>. See <a href="shapespec.htm">Shape Specification</a> on how built-in and custom shapes are defined in ChartDirector.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/multishapebar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class MultishapebarController &lt; ApplicationController
+
+    def index()
+        @title = "Multi-Shape Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data0 = [100, 125, 245, 147]
+        data1 = [85, 156, 179, 211]
+        data2 = [97, 87, 56, 267]
+        labels = ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"]
+
+        # Create a XYChart object of size 600 x 350 pixels
+        c = ChartDirector::XYChart.new(600, 350)
+
+        # Add a title to the chart using 14 pts Arial Bold Italic font
+        c.addTitle("Annual Product Revenue", "arialbi.ttf", 14)
+
+        # Set the plot area at (50, 60) and of size 500 x 240. Use two alternative
+        # background colors (f8f8f8 and ffffff)
+        c.setPlotArea(50, 60, 500, 240, 0xf8f8f8, 0xffffff)
+
+        # Add a legend box at (55, 22) using horizontal layout, with transparent
+        # background
+        c.addLegend(55, 22, false).setBackground(ChartDirector::Transparent)
+
+        # Set the x axis labels
+        c.xAxis().setLabels(labels)
+
+        # Draw the ticks between label positions (instead of at label positions)
+        c.xAxis().setTickOffset(0.5)
+
+        # Add a multi-bar layer with 3 data sets and 9 pixels 3D depth
+        layer = c.addBarLayer2(ChartDirector::Side, 9)
+        layer.addDataSet(data0, -1, "Product A")
+        layer.addDataSet(data1, -1, "Product B")
+        layer.addDataSet(data2, -1, "Product C")
+
+        # Set data set 1 to use a bar shape of a 6-pointed star
+        layer.setBarShape(ChartDirector::StarShape(6), 0)
+
+        # Set data set 2 to use a bar shapre of a 6-sided polygon
+        layer.setBarShape(ChartDirector::PolygonShape(6), 1)
+
+        # Set data set 3 to use an X bar shape
+        layer.setBarShape(ChartDirector::Cross2Shape(), 2)
+
+        # Add a title to the y-axis
+        c.yAxis().setTitle("Revenue (USD in millions)")
+
+        # Add a title to the x axis
+        c.xAxis().setTitle("Year 2005")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/multishapebar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data0 = [100, 125, 245, 147]
+data1 = [85, 156, 179, 211]
+data2 = [97, 87, 56, 267]
+labels = ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"]
+
+# Create a XYChart object of size 600 x 350 pixels
+c = ChartDirector::XYChart.new(600, 350)
+
+# Add a title to the chart using 14 pts Arial Bold Italic font
+c.addTitle("Annual Product Revenue", "arialbi.ttf", 14)
+
+# Set the plot area at (50, 60) and of size 500 x 240. Use two alternative background
+# colors (f8f8f8 and ffffff)
+c.setPlotArea(50, 60, 500, 240, 0xf8f8f8, 0xffffff)
+
+# Add a legend box at (55, 22) using horizontal layout, with transparent background
+c.addLegend(55, 22, false).setBackground(ChartDirector::Transparent)
+
+# Set the x axis labels
+c.xAxis().setLabels(labels)
+
+# Draw the ticks between label positions (instead of at label positions)
+c.xAxis().setTickOffset(0.5)
+
+# Add a multi-bar layer with 3 data sets and 9 pixels 3D depth
+layer = c.addBarLayer2(ChartDirector::Side, 9)
+layer.addDataSet(data0, -1, "Product A")
+layer.addDataSet(data1, -1, "Product B")
+layer.addDataSet(data2, -1, "Product C")
+
+# Set data set 1 to use a bar shape of a 6-pointed star
+layer.setBarShape(ChartDirector::StarShape(6), 0)
+
+# Set data set 2 to use a bar shapre of a 6-sided polygon
+layer.setBarShape(ChartDirector::PolygonShape(6), 1)
+
+# Set data set 3 to use an X bar shape
+layer.setBarShape(ChartDirector::Cross2Shape(), 2)
+
+# Add a title to the y-axis
+c.yAxis().setTitle("Revenue (USD in millions)")
+
+# Add a title to the x axis
+c.xAxis().setTitle("Year 2005")
+
+# Output the chart
+c.makeChart("multishapebar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

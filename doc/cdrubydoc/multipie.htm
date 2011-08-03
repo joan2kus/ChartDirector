@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<Title>Multi-Pie Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Multi-Pie Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/multipie0.png">&nbsp;&nbsp;<img src="images/multipie1.png">&nbsp;&nbsp;<img src="images/multipie2.png">
+<br><br>
+This example demonstrates drawing multiple pies with different data and colors. It also demonstrates putting labels on the sectors and using sector borders.<br><br>
+<ul><li> The sectors colors are specified using <a href="BaseChart.setColors2.htm">BaseChart.setColors2</a>.<br><br>
+<li> The sectors all have white borders set using <a href="PieChart.setLineColor.htm">PieChart.setLineColor</a>. The borders around the perimeters are invisible as they are the same color as the background. The sector borders internal to the pies become the separating lines among sectors.<br><br>
+<li> The sector labels are configured with a pale yellow background and black border. This is by getting the <a href="TextBox.htm">TextBox</a> object representing the sector label prototype using <a href="PieChart.setLabelStyle.htm">PieChart.setLabelStyle</a>, and then call its <a href="Box.setBackground.htm">Box.setBackground</a> method.<br><br>
+<li> The sector labels are moved inside the pie by using <a href="PieChart.setLabelLayout.htm">PieChart.setLabelLayout</a> with a negative label position.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/multipie_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class MultipieController &lt; ApplicationController
+
+    def index()
+        @title = "Multi-Pie Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 3
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pie chart
+        data0 = [25, 18, 15]
+        data1 = [14, 32, 24]
+        data2 = [25, 23, 9]
+
+        # The labels for the pie chart
+        labels = ["Software", "Hardware", "Services"]
+
+        # Create a PieChart object of size 180 x 160 pixels
+        c = ChartDirector::PieChart.new(180, 160)
+
+        # Set the center of the pie at (90, 80) and the radius to 60 pixels
+        c.setPieSize(90, 80, 60)
+
+        # Set the border color of the sectors to white (ffffff)
+        c.setLineColor(0xffffff)
+
+        # Set the background color of the sector label to pale yellow (ffffc0) with a
+        # black border (000000)
+        c.setLabelStyle().setBackground(0xffffc0, 0x000000)
+
+        # Set the label to be slightly inside the perimeter of the circle
+        c.setLabelLayout(ChartDirector::CircleLayout, -10)
+
+        # Set the title, data and colors according to which pie to draw
+        if params["img"] == "0"
+            c.addTitle("Alpha Division", "arialbd.ttf", 8)
+            c.setData(data0, labels)
+            c.setColors2(ChartDirector::DataColor, [0xff3333, 0xff9999, 0xffcccc])
+        elsif params["img"] == "1"
+            c.addTitle("Beta Division", "arialbd.ttf", 8)
+            c.setData(data1, labels)
+            c.setColors2(ChartDirector::DataColor, [0x33ff33, 0x99ff99, 0xccffcc])
+        else
+            c.addTitle("Gamma Division", "arialbd.ttf", 8)
+            c.setData(data2, labels)
+            c.setColors2(ChartDirector::DataColor, [0x3333ff, 0x9999ff, 0xccccff])
+        end
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/multipie.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The data for the pie chart
+    data0 = [25, 18, 15]
+    data1 = [14, 32, 24]
+    data2 = [25, 23, 9]
+
+    # The labels for the pie chart
+    labels = ["Software", "Hardware", "Services"]
+
+    # Create a PieChart object of size 180 x 160 pixels
+    c = ChartDirector::PieChart.new(180, 160)
+
+    # Set the center of the pie at (90, 80) and the radius to 60 pixels
+    c.setPieSize(90, 80, 60)
+
+    # Set the border color of the sectors to white (ffffff)
+    c.setLineColor(0xffffff)
+
+    # Set the background color of the sector label to pale yellow (ffffc0) with a
+    # black border (000000)
+    c.setLabelStyle().setBackground(0xffffc0, 0x000000)
+
+    # Set the label to be slightly inside the perimeter of the circle
+    c.setLabelLayout(ChartDirector::CircleLayout, -10)
+
+    # Set the title, data and colors according to which pie to draw
+    if img == "0"
+        c.addTitle("Alpha Division", "arialbd.ttf", 8)
+        c.setData(data0, labels)
+        c.setColors2(ChartDirector::DataColor, [0xff3333, 0xff9999, 0xffcccc])
+    elsif img == "1"
+        c.addTitle("Beta Division", "arialbd.ttf", 8)
+        c.setData(data1, labels)
+        c.setColors2(ChartDirector::DataColor, [0x33ff33, 0x99ff99, 0xccffcc])
+    else
+        c.addTitle("Gamma Division", "arialbd.ttf", 8)
+        c.setData(data2, labels)
+        c.setColors2(ChartDirector::DataColor, [0x3333ff, 0x9999ff, 0xccccff])
+    end
+
+    # Output the chart
+    c.makeChart("multipie%s.png" % img)
+end
+
+createChart("0")
+createChart("1")
+createChart("2")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

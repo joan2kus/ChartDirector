@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<Title>Icon Donut Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Icon Donut Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/icondonut.png">
+<br><br>
+This example modifies the <a href="iconpie.htm">Icon Pie Chart</a> example by using a semi-transparent donut instead of a pie, and using metallic background color.<br><br>
+<ul><li> <a href="BaseChart.setColors.htm">BaseChart.setColors</a> is used to select the default semi-transparent palette <a href="ChartDirector.transparentPalette.htm">transparentPalette</a>. This palette uses semi-transparent data colors instead of the normal data colors.<br><br>
+<li> <a href="ChartDirector.metalColor.htm">ChartDirector.metalColor</a> is used to create metallic colors using light blue and blue as the base colors. The colors are then used as the chart background color by calling <a href="BaseChart.setBackground.htm">BaseChart.setBackground</a>, and as chart title background color by calling <a href="Box.setBackground.htm">Box.setBackground</a> of the title <a href="TextBox.htm">TextBox</a> object.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/icondonut_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class IcondonutController &lt; ApplicationController
+
+    def index()
+        @title = "Icon Donut Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pie chart
+        data = [72, 18, 15, 12]
+
+        # The depths for the sectors
+        depths = [30, 20, 10, 10]
+
+        # The labels for the pie chart
+        labels = ["Sunny", "Cloudy", "Rainy", "Snowy"]
+
+        # The icons for the sectors
+        icons = ["sun.png", "cloud.png", "rain.png", "snowy.png"]
+
+        # Create a PieChart object of size 400 x 300 pixels
+        c = ChartDirector::PieChart.new(400, 300)
+
+        # Use the semi-transparent palette for this chart
+        c.setColors(ChartDirector::transparentPalette)
+
+        # Set the background to metallic light blue (CCFFFF), with a black border and 1
+        # pixel 3D border effect,
+        c.setBackground(ChartDirector::metalColor(0xccccff), 0x000000, 1)
+
+        # Set directory for loading images to current script directory
+        c.setSearchPath(File.dirname(__FILE__))
+
+        # Set donut center at (200, 175), and outer/inner radii as 100/50 pixels
+        c.setDonutSize(200, 175, 100, 50)
+
+        # Add a title box using 15 pts Times Bold Italic font and metallic blue (8888FF)
+        # background color
+        c.addTitle("Weather Profile in Wonderland", "timesbi.ttf", 15).setBackground(
+            ChartDirector::metalColor(0x8888ff))
+
+        # Set the pie data and the pie labels
+        c.setData(data, labels)
+
+        # Add icons to the chart as a custom field
+        c.addExtraField(icons)
+
+        # Configure the sector labels using CDML to include the icon images
+        c.setLabelFormat(
+            "&lt;*block,valign=absmiddle*&gt;&lt;*img={field0}*&gt; &lt;*block*&gt;{label}\n{percent}%" \
+            "&lt;*/*&gt;&lt;*/*&gt;")
+
+        # Draw the pie in 3D with variable 3D depths
+        c.set3D2(depths)
+
+        # Set the start angle to 225 degrees may improve layout when the depths of the
+        # sector are sorted in descending order, because it ensures the tallest sector is
+        # at the back.
+        c.setStartAngle(225)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/icondonut.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the pie chart
+data = [72, 18, 15, 12]
+
+# The depths for the sectors
+depths = [30, 20, 10, 10]
+
+# The labels for the pie chart
+labels = ["Sunny", "Cloudy", "Rainy", "Snowy"]
+
+# The icons for the sectors
+icons = ["sun.png", "cloud.png", "rain.png", "snowy.png"]
+
+# Create a PieChart object of size 400 x 300 pixels
+c = ChartDirector::PieChart.new(400, 300)
+
+# Use the semi-transparent palette for this chart
+c.setColors(ChartDirector::transparentPalette)
+
+# Set the background to metallic light blue (CCFFFF), with a black border and 1 pixel
+# 3D border effect,
+c.setBackground(ChartDirector::metalColor(0xccccff), 0x000000, 1)
+
+# Set donut center at (200, 175), and outer/inner radii as 100/50 pixels
+c.setDonutSize(200, 175, 100, 50)
+
+# Add a title box using 15 pts Times Bold Italic font and metallic blue (8888FF)
+# background color
+c.addTitle("Weather Profile in Wonderland", "timesbi.ttf", 15).setBackground(
+    ChartDirector::metalColor(0x8888ff))
+
+# Set the pie data and the pie labels
+c.setData(data, labels)
+
+# Add icons to the chart as a custom field
+c.addExtraField(icons)
+
+# Configure the sector labels using CDML to include the icon images
+c.setLabelFormat(
+    "&lt;*block,valign=absmiddle*&gt;&lt;*img={field0}*&gt; &lt;*block*&gt;{label}\n{percent}%&lt;*/*&gt;" \
+    "&lt;*/*&gt;")
+
+# Draw the pie in 3D with variable 3D depths
+c.set3D2(depths)
+
+# Set the start angle to 225 degrees may improve layout when the depths of the sector
+# are sorted in descending order, because it ensures the tallest sector is at the
+# back.
+c.setStartAngle(225)
+
+# Output the chart
+c.makeChart("icondonut.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

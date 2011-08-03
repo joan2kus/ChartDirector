@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<Title>Overlapping Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Overlapping Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/overlapbar.png">
+<br><br>
+This example demonstrates a multi-bar chart in which the bars within a cluster overlaps.<br><br>
+The overlapping effect is configured using <a href="BarLayer.setOverlapRatio.htm">BarLayer.setOverlapRatio</a>. This method allows you to specify overlapping ratio and order. In this example, the overlapping ratio is 0.5, while the default overlapping order is used. The default order is that the first data set will stay on top of the second data set, and so on.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/overlapbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class OverlapbarController &lt; ApplicationController
+
+    def index()
+        @title = "Overlapping Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data0 = [100, 125, 156, 147, 87, 124, 178, 109, 140, 106, 192, 122]
+        data1 = [122, 156, 179, 211, 198, 177, 160, 220, 190, 188, 220, 270]
+        data2 = [167, 190, 213, 267, 250, 320, 212, 199, 245, 267, 240, 310]
+        labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct",
+            "Nov", "Dec"]
+
+        # Create a XYChart object of size 580 x 280 pixels
+        c = ChartDirector::XYChart.new(580, 280)
+
+        # Add a title to the chart using 14 pts Arial Bold Italic font
+        c.addTitle("Product Revenue For Last 3 Years", "arialbi.ttf", 14)
+
+        # Set the plot area at (50, 50) and of size 500 x 200. Use two alternative
+        # background colors (f8f8f8 and ffffff)
+        c.setPlotArea(50, 50, 500, 200, 0xf8f8f8, 0xffffff)
+
+        # Add a legend box at (50, 25) using horizontal layout. Use 8pts Arial as font,
+        # with transparent background.
+        c.addLegend(50, 25, false, "arial.ttf", 8).setBackground(
+            ChartDirector::Transparent)
+
+        # Set the x axis labels
+        c.xAxis().setLabels(labels)
+
+        # Draw the ticks between label positions (instead of at label positions)
+        c.xAxis().setTickOffset(0.5)
+
+        # Add a multi-bar layer with 3 data sets
+        layer = c.addBarLayer2(ChartDirector::Side)
+        layer.addDataSet(data0, 0xff8080, "Year 2003")
+        layer.addDataSet(data1, 0x80ff80, "Year 2004")
+        layer.addDataSet(data2, 0x8080ff, "Year 2005")
+
+        # Set 50% overlap between bars
+        layer.setOverlapRatio(0.5)
+
+        # Add a title to the y-axis
+        c.yAxis().setTitle("Revenue (USD in millions)")
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/overlapbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data0 = [100, 125, 156, 147, 87, 124, 178, 109, 140, 106, 192, 122]
+data1 = [122, 156, 179, 211, 198, 177, 160, 220, 190, 188, 220, 270]
+data2 = [167, 190, 213, 267, 250, 320, 212, 199, 245, 267, 240, 310]
+labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct",
+    "Nov", "Dec"]
+
+# Create a XYChart object of size 580 x 280 pixels
+c = ChartDirector::XYChart.new(580, 280)
+
+# Add a title to the chart using 14 pts Arial Bold Italic font
+c.addTitle("Product Revenue For Last 3 Years", "arialbi.ttf", 14)
+
+# Set the plot area at (50, 50) and of size 500 x 200. Use two alternative background
+# colors (f8f8f8 and ffffff)
+c.setPlotArea(50, 50, 500, 200, 0xf8f8f8, 0xffffff)
+
+# Add a legend box at (50, 25) using horizontal layout. Use 8pts Arial as font, with
+# transparent background.
+c.addLegend(50, 25, false, "arial.ttf", 8).setBackground(ChartDirector::Transparent)
+
+# Set the x axis labels
+c.xAxis().setLabels(labels)
+
+# Draw the ticks between label positions (instead of at label positions)
+c.xAxis().setTickOffset(0.5)
+
+# Add a multi-bar layer with 3 data sets
+layer = c.addBarLayer2(ChartDirector::Side)
+layer.addDataSet(data0, 0xff8080, "Year 2003")
+layer.addDataSet(data1, 0x80ff80, "Year 2004")
+layer.addDataSet(data2, 0x8080ff, "Year 2005")
+
+# Set 50% overlap between bars
+layer.setOverlapRatio(0.5)
+
+# Add a title to the y-axis
+c.yAxis().setTitle("Revenue (USD in millions)")
+
+# Output the chart
+c.makeChart("overlapbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

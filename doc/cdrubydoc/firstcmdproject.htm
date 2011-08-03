@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<Title>The First Ruby Command Line Project</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">The First Ruby Command Line Project</p>
+<hr class="separator">
+<div class="content">The following sample code comes from the Ruby Command Line sample programs included in the ChartDirector distribution. If you have not yet tried the sample programs, it is highly recommended you try them now. Please refer to the <a href="install.htm">Installation</a> section for details. They are very useful for exploring and testing the features of ChartDirector.<br><br>
+<b>[Command Line Version]</b> rubydemo/simplebar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data = [85, 156, 179.5, 211, 123]
+
+# The labels for the bar chart
+labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+# Create a XYChart object of size 250 x 250 pixels
+c = ChartDirector::XYChart.new(250, 250)
+
+# Set the plotarea at (30, 20) and of size 200 x 200 pixels
+c.setPlotArea(30, 20, 200, 200)
+
+# Add a bar chart layer using the given data
+c.addBarLayer(data)
+
+# Set the labels on the x axis.
+c.xAxis().setLabels(labels)
+
+# Output the chart
+c.makeChart("simplebar.png")</pre></tr></td></table><br>
+The code is almost identical to the charting code in the previous section <a href="firstproject.htm">The First Ruby On Rails Project</a>, so it will not be further explained. Please refer the previous section for the details. The main difference is that instead of streaming the chart to the browser, in this example, the chart is created as an image file using <a href="BaseChart.makeChart.htm">BaseChart.makeChart</a>.</div><br>
+<hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div></body>
+</HTML>

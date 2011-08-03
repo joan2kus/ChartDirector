@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<Title>3D Bar Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">3D Bar Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/threedbar.png">
+<br><br>
+This example demonstrates using <a href="Layer.set3D.htm">Layer.set3D</a> to set the bars to 3D style.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/threedbar_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class ThreedbarController &lt; ApplicationController
+
+    def index()
+        @title = "3D Bar Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the bar chart
+        data = [85, 156, 179.5, 211, 123]
+
+        # The labels for the bar chart
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 300 x 280 pixels
+        c = ChartDirector::XYChart.new(300, 280)
+
+        # Set the plotarea at (45, 30) and of size 200 x 200 pixels
+        c.setPlotArea(45, 30, 200, 200)
+
+        # Add a title to the chart
+        c.addTitle("Weekly Server Load")
+
+        # Add a title to the y axis
+        c.yAxis().setTitle("MBytes")
+
+        # Add a title to the x axis
+        c.xAxis().setTitle("Work Week 25")
+
+        # Add a bar chart layer with green (0x00ff00) bars using the given data
+        c.addBarLayer(data, 0x00ff00).set3D()
+
+        # Set the labels on the x axis.
+        c.xAxis().setLabels(labels)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/threedbar.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the bar chart
+data = [85, 156, 179.5, 211, 123]
+
+# The labels for the bar chart
+labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+# Create a XYChart object of size 300 x 280 pixels
+c = ChartDirector::XYChart.new(300, 280)
+
+# Set the plotarea at (45, 30) and of size 200 x 200 pixels
+c.setPlotArea(45, 30, 200, 200)
+
+# Add a title to the chart
+c.addTitle("Weekly Server Load")
+
+# Add a title to the y axis
+c.yAxis().setTitle("MBytes")
+
+# Add a title to the x axis
+c.xAxis().setTitle("Work Week 25")
+
+# Add a bar chart layer with green (0x00ff00) bars using the given data
+c.addBarLayer(data, 0x00ff00).set3D()
+
+# Set the labels on the x axis.
+c.xAxis().setLabels(labels)
+
+# Output the chart
+c.makeChart("threedbar.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

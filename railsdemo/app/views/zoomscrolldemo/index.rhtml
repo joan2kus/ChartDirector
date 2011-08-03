@@ -1,0 +1,293 @@
+<html>
+<head>
+    <title>ChartDirector Zoom and Scroll Demonstration</title>
+    <%= javascript_include_tag("cdjcv.js") %>
+    <style type="text/css">
+        div.chartPushButtonSelected { padding:5px; background:#ccffcc; cursor:hand; }
+        div.chartPushButton { padding:5px; cursor:hand; }
+        td.chartPushButton { font-family:Verdana; font-size:9pt; cursor:pointer; border-bottom:#000000 1px solid; }
+    </style>
+</head>
+<body style="margin:0px" onload="initJsChartViewer()">
+<script type="text/javascript">
+// Initialize browser side Javascript controls
+function initJsChartViewer()
+{
+    // Check if the Javascript ChartViewer library is loaded
+    if (!window.JsChartViewer)
+        return;
+
+    // Get the Javascript ChartViewer object
+    var viewer = JsChartViewer.get('<%= @viewer.getId() %>');
+
+    // Connect the mouse usage buttons to the Javascript ChartViewer object
+    connectViewerMouseUsage('ViewerMouseUsage1', viewer);
+    // Connect the xy zoom mode buttons to the Javascript ChartViewer object
+    connectViewerZoomControl('ViewerZoomControl1', viewer);
+
+    // Detect if browser is capable of support partial update (AJAX chart update)
+    if (JsChartViewer.canSupportPartialUpdate())
+    {
+        // Browser can support partial update, so connect the view port change event and
+        // the submit button to trigger a partial update
+        viewer.attachHandler("ViewPortChanged", viewer.partialUpdate);
+        document.getElementById('SubmitButton').onclick = function() { viewer.partialUpdate(); return false; };
+
+        // For partial updates, we need to pass the start date / end date select boxes values to/from
+        // the server via Javascript ChartViewer custom attributes
+        var controlsToSync = ['StartYear', 'StartMonth', 'StartDay', 'EndYear', 'EndMonth', 'EndDay'];
+        viewer.attachHandler("PreUpdate", function() { copyToViewer(viewer, controlsToSync); });
+        viewer.attachHandler("PostUpdate", function() { copyFromViewer(viewer, controlsToSync); });
+    }
+    else
+        // Browser cannot support partial update - so use full page update
+        viewer.attachHandler("ViewPortChanged", function() { document.forms[0].submit(); });
+}
+// A utility to copy HTML control values to Javascript ChartViewer custom attributes
+function copyToViewer(viewer, controlsToSync)
+{
+    for (var i = 0; i < controlsToSync.length; ++i)
+    {
+        var obj = document.getElementById(controlsToSync[i]);
+        if (obj && !{"button":1, "file":1, "image":1, "reset":1, "submit":1}[obj.type])
+        {
+            if ((obj.type == "checkbox") || (obj.type == "radio"))
+                viewer.setCustomAttr(obj.id, obj.checked ? 1 : 0);
+            else
+                viewer.setCustomAttr(obj.id, obj.value);
+        }
+    }
+}
+// A utility to copy Javascipt ChartViewer custom attributes to HTML controls
+function copyFromViewer(viewer, controlsToSync)
+{
+    for (var i = 0; i < controlsToSync.length; ++i)
+    {
+        var obj = document.getElementById(controlsToSync[i]);
+        if (obj)
+        {
+            var value = viewer.getCustomAttr(obj.id);
+            if (typeof value != "undefined")
+            {
+                if ((obj.type == "checkbox") || (obj.type == "radio"))
+                    obj.checked = parseInt(value);
+                else
+                    obj.value = value;
+
+                if (obj.validate)
+                    obj.validate();
+            }
+        }
+    }
+}
+</script>
+<form method="post">
+<table cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td align="right" colspan="2" style="background:#000088">
+            <div style="padding-bottom:2px; padding-right:3px; font-weight:bold; font-size:10pt; font-style:italic; font-family:Arial;">
+                <a style="color:#FFFF00; text-decoration:none" href="http://www.advsofteng.com/">Advanced Software Engineering</a>
+            </div>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td style="width:150px; background:#c0c0ff; border-left:black 1px solid; border-right:black 1px solid; border-bottom:black 1px solid;">
+            <!-- The following table is to create 3 cells for 3 buttons. The buttons are used to control
+                 the mouse usage mode of the Javascript ChartViewer. -->
+            <table id="ViewerMouseUsage1" cellspacing="0" cellpadding="0" width="100%" border="0">
+                <tr>
+                    <td class="chartPushButton">
+                        <div class="chartPushButton" id="ViewerMouseUsage1_Scroll" title="Pointer">
+                            <img src="<%= image_path('pointer.gif') %>" style="vertical-align:middle" width="16" height="16" alt="Pointer" />&nbsp;&nbsp;Pointer
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="chartPushButton">
+                        <div class="chartPushButton" id="ViewerMouseUsage1_ZoomIn" title="Zoom In">
+                            <img src="<%= image_path('zoomInIcon.gif') %>" style="vertical-align:middle" width="16" height="16" alt="Zoom In" />&nbsp;&nbsp;Zoom In
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="chartPushButton">
+                        <div class="chartPushButton" id="ViewerMouseUsage1_ZoomOut" title="Zoom Out">
+                            <img src="<%= image_path('zoomOutIcon.gif') %>" style="vertical-align:middle" width="16" height="16" alt="Zoom Out" />&nbsp;&nbsp;Zoom Out
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <script type="text/javascript">
+            // Connect the mouse usage buttons to the Javascript ChartViewer
+            function connectViewerMouseUsage(controlId, viewer)
+            {
+                // A cross browser utility to get the object by id.
+                function getObj(id) { return document.getElementById ? document.getElementById(id) : document.all[id]; }
+
+                // Set the button styles (colors) based on the current mouse usage mode of the Javascript ChartViewer
+                function syncButtons()
+                {
+                    getObj(controlId + "_Scroll").className = (viewer.getMouseUsage() == JsChartViewer.Scroll) ?
+                        "chartPushButtonSelected" : "chartPushButton";
+                    getObj(controlId + "_ZoomIn").className = (viewer.getMouseUsage() == JsChartViewer.ZoomIn) ?
+                        "chartPushButtonSelected" : "chartPushButton";
+                    getObj(controlId + "_ZoomOut").className = (viewer.getMouseUsage() == JsChartViewer.ZoomOut) ?
+                        "chartPushButtonSelected" : "chartPushButton";
+                }
+                syncButtons();
+
+                // Run syncButtons whenever the Javascript ChartViewer is updated
+                viewer.attachHandler("PostUpdate", syncButtons);
+
+                // Set the Javascript ChartViewer mouse usage mode if a button is clicked.
+                getObj(controlId + "_Scroll").onclick = function() { viewer.setMouseUsage(JsChartViewer.Scroll); syncButtons(); }
+                getObj(controlId + "_ZoomIn").onclick = function() { viewer.setMouseUsage(JsChartViewer.ZoomIn); syncButtons(); }
+                getObj(controlId + "_ZoomOut").onclick = function() { viewer.setMouseUsage(JsChartViewer.ZoomOut); syncButtons(); }
+            }
+            </script>
+            <div style="font-size:9pt; margin:15px 5px 0px; font-family:verdana"><b>Zoom Mode</b></div>
+            <!-- The following table is to create 2 cells for 2 buttons. The buttons are used to control
+                 the zoom/scroll directions of the Javascript ChartViewer. -->
+            <table id="ViewerZoomControl1" cellspacing="0" cellpadding="0" width="100%" border="0">
+                <tr>
+                    <td class="chartPushButton" style="border-bottom: #000000 1px solid; border-top: #000000 1px solid;">
+                        <div class="chartPushButton" id="ViewerZoomControl1_Xmode" title="X-Axis zoomable / Y-Axis auto-scaled">
+                            <img src="<%= image_path('xrange.gif') %>" style="vertical-align:middle" width="16" height="16" alt="X Zoom/Y Auto" />&nbsp;&nbsp;X Zoom / Y Auto
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="chartPushButton" style="border-bottom: #000000 1px solid;">
+                        <div class="chartPushButton" id="ViewerZoomControl1_XYmode" title="X-Axis and Y-Axis zoomable">
+                            <img src="<%= image_path('xyrange.gif') %>" style="vertical-align:middle" width="16" height="16" alt="XY Zoom" />&nbsp;&nbsp;XY Zoom
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <script type="text/javascript">
+            // Connect the zoom/scroll direction buttons to the Javascript ChartViewer
+            function connectViewerZoomControl(controlId, viewer)
+            {
+                // A cross browser utility to get the object by id.
+                function getObj(id) { return document.getElementById ? document.getElementById(id) : document.all[id]; }
+
+                // Set the button styles (colors) based on current zoom/scroll direction settings of the Javascript ChartViewer
+                function syncButtons()
+                {
+                    getObj(controlId + "_Xmode").className = (viewer.getZoomDirection() == JsChartViewer.Horizontal) ?
+                        "chartPushButtonSelected" : "chartPushButton";
+                    getObj(controlId + "_XYmode").className = (viewer.getZoomDirection() == JsChartViewer.HorizontalVertical) ?
+                        "chartPushButtonSelected" : "chartPushButton";
+                }
+                syncButtons();
+
+                // Run syncButtons whenever the Javascript ChartViewer is updated
+                viewer.attachHandler("PostUpdate", syncButtons);
+
+                // Set the Javascript ChartViewer zoom/scroll direction if a button is clicked.
+                function setViewerDirection(d)
+                {
+                    viewer.setScrollDirection(d);
+                    viewer.setZoomDirection(d);
+                    syncButtons();
+                }
+                getObj(controlId + "_Xmode").onclick = function() { setViewerDirection(JsChartViewer.Horizontal); }
+                getObj(controlId + "_XYmode").onclick = function() { setViewerDirection(JsChartViewer.HorizontalVertical); }
+            }
+            </script>
+            <div style="font-size:9pt; margin:15px 5px 0px; font-family:Verdana">
+                <b>Start Time</b><br />
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <td style="font-size:8pt; font-family:Arial">Year</td>
+                        <td style="font-size:8pt; font-family:Arial">Mon</td>
+                        <td style="font-size:8pt; font-family:Arial">Day</td>
+                    </tr>
+                    <tr>
+                        <td><select id="StartYear" name="StartYear" style="width:60">
+                            <%= @startYearSelectOptions %>
+                        </select></td>
+                        <td><select id="StartMonth" name="StartMonth" style="width:40">
+                            <%= @startMonthSelectOptions %>
+                        </select></td>
+                        <td><select id="StartDay" name="StartDay" style="width:40">
+                            <%= @startDaySelectOptions %>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="font-size:9pt; margin:15px 5px 0px; font-family:Verdana">
+                <b>End Time</b><br />
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <td style="font-size:8pt; font-family:Arial">Year</td>
+                        <td style="font-size:8pt; font-family:Arial">Mon</td>
+                        <td style="font-size:8pt; font-family:Arial">Day</td>
+                    </tr>
+                    <tr>
+                        <td><select id="EndYear" name="EndYear" style="width:60">
+                            <%= @endYearSelectOptions %>
+                        </select></td>
+                        <td><select id="EndMonth" name="EndMonth" style="width:40">
+                            <%= @endMonthSelectOptions %>
+                        </select></td>
+                        <td><select id="EndDay" name="EndDay" style="width:40">
+                            <%= @endDaySelectOptions %>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
+            <script type="text/javascript">
+            // A utility to validate the day of month for the start date / end date HTML controls.
+            // It sets the day of month select so that it only shows the legal range.
+            function validateYMDControls(yearObj, monthObj, dayObj)
+            {
+                // Get the number of days in a month
+                var noOfDays = [31, (parseInt(yearObj.value) % 4 == 0) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+                    [monthObj.selectedIndex];
+
+                // Ensure the selected day of month is not bigger than the days in month
+                dayObj.selectedIndex = Math.min(noOfDays - 1, dayObj.selectedIndex);
+
+                // Extend/Shrink the day of month select box to ensure it covers the legal day range
+                for (var i = dayObj.options.length; i < noOfDays; ++i)
+                    dayObj.options[i] = new Option(i + 1, i + 1);
+                for (var j = dayObj.options.length; j > noOfDays; --j)
+                    dayObj.remove(j - 1);
+            }
+            // Initialize the HTML select controls for selecting dates
+            function initYMDControls(yearId, monthId, dayId)
+            {
+                // A cross browser utility to get the object by id.
+                var getObj = function(id) { return document.getElementById ? document.getElementById(id) : document.all[id]; }
+
+                // Connect the onchange event to validateYMDControls
+                getObj(yearId).onchange = getObj(yearId).validate = getObj(monthId).onchange = getObj(monthId).validate =
+                    function() { validateYMDControls(getObj(yearId), getObj(monthId), getObj(dayId)); };
+
+                // Validate once immediately
+                getObj(yearId).validate();
+            }
+            // Connnect the start date / end date HTML select controls
+            initYMDControls('StartYear', 'StartMonth', 'StartDay');
+            initYMDControls('EndYear', 'EndMonth', 'EndDay');
+            </script>
+            <div style="margin-top:20px; font-family:Verdana; font-size:9pt; text-align:center">
+                <input type="submit" id="SubmitButton" name="SubmitButton" value="Update Chart"></input>
+            </div>
+        </td>
+        <td>
+            <div style="font-weight:bold; font-size:20pt; margin:5px 0px 0px 5px; font-family:Arial">
+                ChartDirector Zoom and Scroll Demonstration
+            </div>
+            <hr style="border:solid 1px #000080" />
+            <div style="padding:0px 5px 0px 10px">
+                <!-- ****** Here is the chart image ****** -->
+                <%= @viewer.renderHTML() %>
+            </div>
+        </td>
+    </tr>
+</table>
+</form>
+</body>
+</html>

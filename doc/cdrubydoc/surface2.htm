@@ -1,0 +1,178 @@
+<HTML>
+<HEAD>
+<Title>Surface Chart (2)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Surface Chart (2)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/surface2.jpg">
+<br><br>
+This example extends the <a href="surface.htm">Surface Chart (1)</a> example by adding surface grid and contour lines, and using alternative view angles and continuous coloring.<br><br>
+<ul><li> The alternative view angles are set using <a href="SurfaceChart.setViewAngle.htm">SurfaceChart.setViewAngle</a>.<br><br>
+<li> The surface grid lines are added using <a href="SurfaceChart.setSurfaceAxisGrid.htm">SurfaceChart.setSurfaceAxisGrid</a>.<br><br>
+<li> The contour lines are added using <a href="SurfaceChart.setContourColor.htm">SurfaceChart.setContourColor</a>.<br><br>
+<li> Note that for both the surface grid and contour lines, semi-transparent line colors are used to make the lines look thin and light.<br><br>
+<li> Continuous coloring are configured using <a href="ColorAxis.setColorGradient.htm">ColorAxis.setColorGradient</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/surface2_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class Surface2Controller &lt; ApplicationController
+
+    def index()
+        @title = "Surface Chart (2)"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The x and y coordinates of the grid
+        dataX = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        dataY = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+        # The values at the grid points. In this example, we will compute the values using
+        # the formula z = sin((x - 0.5) * 2 * pi) * sin((y - 0.5) * 2 * pi)
+        dataZ = Array.new((dataX.length) * (dataY.length))
+        0.upto(dataY.length - 1) do |yIndex|
+            y = (dataY[yIndex] - 0.5) * 2 * 3.1416
+            0.upto(dataX.length - 1) do |xIndex|
+                x = (dataX[xIndex] - 0.5) * 2 * 3.1416
+                dataZ[yIndex * (dataX.length) + xIndex] = Math.sin(x) * Math.sin(y)
+            end
+        end
+
+        # Create a SurfaceChart object of size 720 x 540 pixels
+        c = ChartDirector::SurfaceChart.new(720, 540)
+
+        # Add a title to the chart using 20 points Times New Roman Italic font
+        c.addTitle("Quantum Wave Function", "timesi.ttf", 20)
+
+        # Set the center of the plot region at (360, 245), and set width x depth x height
+        # to 360 x 360 x 270 pixels
+        c.setPlotRegion(360, 245, 360, 360, 270)
+
+        # Set the elevation and rotation angles to 20 and 30 degrees
+        c.setViewAngle(20, 30)
+
+        # Set the data to use to plot the chart
+        c.setData(dataX, dataY, dataZ)
+
+        # Spline interpolate data to a 80 x 80 grid for a smooth surface
+        c.setInterpolation(80, 80)
+
+        # Set surface grid lines to semi-transparent black (dd000000)
+        c.setSurfaceAxisGrid(0xdd000000)
+
+        # Set contour lines to semi-transparent white (80ffffff)
+        c.setContourColor(0x80ffffff)
+
+        # Add a color axis (the legend) in which the left center is anchored at (645,
+        # 270). Set the length to 200 pixels and the labels on the right side. Use smooth
+        # gradient coloring.
+        c.setColorAxis(645, 270, ChartDirector::Left, 200, ChartDirector::Right
+            ).setColorGradient()
+
+        # Set the x, y and z axis titles using 10 points Arial Bold font
+        c.xAxis().setTitle("x/L(x)", "arialbd.ttf", 10)
+        c.yAxis().setTitle("y/L(y)", "arialbd.ttf", 10)
+        c.zAxis().setTitle("Wave Function Amplitude", "arialbd.ttf", 10)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::JPG), :type =&gt; "image/jpeg",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/surface2.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The x and y coordinates of the grid
+dataX = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+dataY = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+# The values at the grid points. In this example, we will compute the values using
+# the formula z = sin((x - 0.5) * 2 * pi) * sin((y - 0.5) * 2 * pi)
+dataZ = Array.new((dataX.length) * (dataY.length))
+0.upto(dataY.length - 1) do |yIndex|
+    y = (dataY[yIndex] - 0.5) * 2 * 3.1416
+    0.upto(dataX.length - 1) do |xIndex|
+        x = (dataX[xIndex] - 0.5) * 2 * 3.1416
+        dataZ[yIndex * (dataX.length) + xIndex] = Math.sin(x) * Math.sin(y)
+    end
+end
+
+# Create a SurfaceChart object of size 720 x 540 pixels
+c = ChartDirector::SurfaceChart.new(720, 540)
+
+# Add a title to the chart using 20 points Times New Roman Italic font
+c.addTitle("Quantum Wave Function", "timesi.ttf", 20)
+
+# Set the center of the plot region at (360, 245), and set width x depth x height to
+# 360 x 360 x 270 pixels
+c.setPlotRegion(360, 245, 360, 360, 270)
+
+# Set the elevation and rotation angles to 20 and 30 degrees
+c.setViewAngle(20, 30)
+
+# Set the data to use to plot the chart
+c.setData(dataX, dataY, dataZ)
+
+# Spline interpolate data to a 80 x 80 grid for a smooth surface
+c.setInterpolation(80, 80)
+
+# Set surface grid lines to semi-transparent black (dd000000)
+c.setSurfaceAxisGrid(0xdd000000)
+
+# Set contour lines to semi-transparent white (80ffffff)
+c.setContourColor(0x80ffffff)
+
+# Add a color axis (the legend) in which the left center is anchored at (645, 270).
+# Set the length to 200 pixels and the labels on the right side. Use smooth gradient
+# coloring.
+c.setColorAxis(645, 270, ChartDirector::Left, 200, ChartDirector::Right
+    ).setColorGradient()
+
+# Set the x, y and z axis titles using 10 points Arial Bold font
+c.xAxis().setTitle("x/L(x)", "arialbd.ttf", 10)
+c.yAxis().setTitle("y/L(y)", "arialbd.ttf", 10)
+c.zAxis().setTitle("Wave Function Amplitude", "arialbd.ttf", 10)
+
+# Output the chart
+c.makeChart("surface2.jpg")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

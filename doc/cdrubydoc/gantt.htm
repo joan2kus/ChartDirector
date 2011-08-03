@@ -1,0 +1,201 @@
+<HTML>
+<HEAD>
+<Title>Simple Gantt Chart</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Simple Gantt Chart</p>
+<hr class="separator">
+<div class="content">
+<img src="images/gantt.png">
+<br><br>
+This example demonstrates a simple gantt chart.<br><br>
+This chart is created by using a horizontal box-whisker layer, in which only the "box" part of the box-whisker layer is used. Date/time values are used as box data, resulting in a gantt chart.<br><br>
+The key features demonstrated in this example are:<br><br>
+<ul><li> Create the box-whisker layer using <a href="XYChart.addBoxWhiskerLayer.htm">XYChart.addBoxWhiskerLayer</a>, in which the data arrays are dates.<br><br>
+<li> Swap the x-axis and y-axis using <a href="XYChart.swapXY.htm">XYChart.swapXY</a>, so the chart is using a horizontal orientation.<br><br>
+<li> Use <a href="XYChart.setYAxisOnRight.htm">XYChart.setYAxisOnRight</a> to move the y-axis to the opposite side of the plot area, so that the y-axis is at the top of the plot area. (<b>Note:</b> the "right" word on setYAxisOnRight means the "right" side before "swapXY" rotation. After rotation, the right side will become to top side.)<br><br>
+<li> Use <a href="Axis.setReverse.htm">Axis.setReverse</a> to reverse the direction of the x-axis, so that the x-axis is vertical from top to bottom (instead of from bottom to top).<br><br>
+<li> Set the y-axis to date scale using <a href="Axis.setDateScale.htm">Axis.setDateScale</a>.<br><br>
+<li> Set multi-format axis labels for the y-axis using <a href="Axis.setMultiFormat.htm">Axis.setMultiFormat</a>. Note that the labels for the first week of the month are in bold, with the month name shown. The other labels just show the day.<br><br>
+<li> Use alternative background colors for the plot area by providing two background colors when calling <a href="XYChart.setPlotArea.htm">XYChart.setPlotArea</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/gantt_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class GanttController &lt; ApplicationController
+
+    def index()
+        @title = "Simple Gantt Chart"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # data for the gantt chart, representing the start date, end date and names for
+        # various activities
+        startDate = [Time.mktime(2004, 8, 16), Time.mktime(2004, 8, 30), Time.mktime(2004,
+            9, 13), Time.mktime(2004, 9, 20), Time.mktime(2004, 9, 27), Time.mktime(2004,
+            10, 4), Time.mktime(2004, 10, 25), Time.mktime(2004, 11, 1), Time.mktime(2004,
+            11, 8)]
+        endDate = [Time.mktime(2004, 8, 30), Time.mktime(2004, 9, 13), Time.mktime(2004,
+            9, 27), Time.mktime(2004, 10, 4), Time.mktime(2004, 10, 11), Time.mktime(2004,
+            11, 8), Time.mktime(2004, 11, 8), Time.mktime(2004, 11, 22), Time.mktime(2004,
+            11, 22)]
+        labels = ["Market Research", "Define Specifications", "Overall Archiecture",
+            "Project Planning", "Detail Design", "Software Development", "Test Plan",
+            "Testing and QA", "User Documentation"]
+
+        # Create a XYChart object of size 620 x 280 pixels. Set background color to light
+        # blue (ccccff), with 1 pixel 3D border effect.
+        c = ChartDirector::XYChart.new(620, 280, 0xccccff, 0x000000, 1)
+
+        # Add a title to the chart using 15 points Times Bold Itatic font, with white
+        # (ffffff) text on a deep blue (000080) background
+        c.addTitle("Simple Gantt Chart Demo", "timesbi.ttf", 15, 0xffffff).setBackground(
+            0x000080)
+
+        # Set the plotarea at (140, 55) and of size 460 x 200 pixels. Use alternative
+        # white/grey background. Enable both horizontal and vertical grids by setting
+        # their colors to grey (c0c0c0). Set vertical major grid (represents month
+        # boundaries) 2 pixels in width
+        c.setPlotArea(140, 55, 460, 200, 0xffffff, 0xeeeeee, ChartDirector::LineColor,
+            0xc0c0c0, 0xc0c0c0).setGridWidth(2, 1, 1, 1)
+
+        # swap the x and y axes to create a horziontal box-whisker chart
+        c.swapXY()
+
+        # Set the y-axis scale to be date scale from Aug 16, 2004 to Nov 22, 2004, with
+        # ticks every 7 days (1 week)
+        c.yAxis().setDateScale(Time.mktime(2004, 8, 16), Time.mktime(2004, 11, 22),
+            86400 * 7)
+
+        # Set multi-style axis label formatting. Month labels are in Arial Bold font in
+        # "mmm d" format. Weekly labels just show the day of month and use minor tick (by
+        # using '-' as first character of format string).
+        c.yAxis().setMultiFormat(ChartDirector::StartOfMonthFilter(),
+            "&lt;*font=arialbd.ttf*&gt;{value|mmm d}", ChartDirector::StartOfDayFilter(),
+            "-{value|d}")
+
+        # Set the y-axis to shown on the top (right + swapXY = top)
+        c.setYAxisOnRight()
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Reverse the x-axis scale so that it points downwards.
+        c.xAxis().setReverse()
+
+        # Set the horizontal ticks and grid lines to be between the bars
+        c.xAxis().setTickOffset(0.5)
+
+        # Add a green (33ff33) box-whisker layer showing the box only.
+        c.addBoxWhiskerLayer(startDate, endDate, nil, nil, nil, 0x00cc00,
+            ChartDirector::SameAsMainColor, ChartDirector::SameAsMainColor)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/gantt.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# data for the gantt chart, representing the start date, end date and names for
+# various activities
+startDate = [Time.mktime(2004, 8, 16), Time.mktime(2004, 8, 30), Time.mktime(2004, 9,
+    13), Time.mktime(2004, 9, 20), Time.mktime(2004, 9, 27), Time.mktime(2004, 10, 4
+    ), Time.mktime(2004, 10, 25), Time.mktime(2004, 11, 1), Time.mktime(2004, 11, 8)]
+endDate = [Time.mktime(2004, 8, 30), Time.mktime(2004, 9, 13), Time.mktime(2004, 9,
+    27), Time.mktime(2004, 10, 4), Time.mktime(2004, 10, 11), Time.mktime(2004, 11, 8
+    ), Time.mktime(2004, 11, 8), Time.mktime(2004, 11, 22), Time.mktime(2004, 11, 22)
+    ]
+labels = ["Market Research", "Define Specifications", "Overall Archiecture",
+    "Project Planning", "Detail Design", "Software Development", "Test Plan",
+    "Testing and QA", "User Documentation"]
+
+# Create a XYChart object of size 620 x 280 pixels. Set background color to light
+# blue (ccccff), with 1 pixel 3D border effect.
+c = ChartDirector::XYChart.new(620, 280, 0xccccff, 0x000000, 1)
+
+# Add a title to the chart using 15 points Times Bold Itatic font, with white
+# (ffffff) text on a deep blue (000080) background
+c.addTitle("Simple Gantt Chart Demo", "timesbi.ttf", 15, 0xffffff).setBackground(
+    0x000080)
+
+# Set the plotarea at (140, 55) and of size 460 x 200 pixels. Use alternative
+# white/grey background. Enable both horizontal and vertical grids by setting their
+# colors to grey (c0c0c0). Set vertical major grid (represents month boundaries) 2
+# pixels in width
+c.setPlotArea(140, 55, 460, 200, 0xffffff, 0xeeeeee, ChartDirector::LineColor,
+    0xc0c0c0, 0xc0c0c0).setGridWidth(2, 1, 1, 1)
+
+# swap the x and y axes to create a horziontal box-whisker chart
+c.swapXY()
+
+# Set the y-axis scale to be date scale from Aug 16, 2004 to Nov 22, 2004, with ticks
+# every 7 days (1 week)
+c.yAxis().setDateScale(Time.mktime(2004, 8, 16), Time.mktime(2004, 11, 22), 86400 * 7
+    )
+
+# Set multi-style axis label formatting. Month labels are in Arial Bold font in "mmm
+# d" format. Weekly labels just show the day of month and use minor tick (by using
+# '-' as first character of format string).
+c.yAxis().setMultiFormat(ChartDirector::StartOfMonthFilter(),
+    "&lt;*font=arialbd.ttf*&gt;{value|mmm d}", ChartDirector::StartOfDayFilter(),
+    "-{value|d}")
+
+# Set the y-axis to shown on the top (right + swapXY = top)
+c.setYAxisOnRight()
+
+# Set the labels on the x axis
+c.xAxis().setLabels(labels)
+
+# Reverse the x-axis scale so that it points downwards.
+c.xAxis().setReverse()
+
+# Set the horizontal ticks and grid lines to be between the bars
+c.xAxis().setTickOffset(0.5)
+
+# Add a green (33ff33) box-whisker layer showing the box only.
+c.addBoxWhiskerLayer(startDate, endDate, nil, nil, nil, 0x00cc00,
+    ChartDirector::SameAsMainColor, ChartDirector::SameAsMainColor)
+
+# Output the chart
+c.makeChart("gantt.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

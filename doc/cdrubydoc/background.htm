@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+<Title>Background and Wallpaper</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Background and Wallpaper</p>
+<hr class="separator">
+<div class="content">
+<img src="images/background0.png">&nbsp;&nbsp;<img src="images/background1.png">&nbsp;&nbsp;<img src="images/background2.png">&nbsp;&nbsp;<img src="images/background3.png">
+<br><br>
+This example demonstrates some of the background effects supported by ChartDirector.<br><br>
+ChartDirector supports using an image file as the wallpaper of the chart image background with <a href="BaseChart.setWallpaper.htm">BaseChart.setWallpaper</a>, and as the plot area background with <a href="PlotArea.setBackground2.htm">PlotArea.setBackground2</a>.<br><br>
+In addition to wallpapers, ChartDirector supports alternating plot area background colors using <a href="PlotArea.setBackground.htm">PlotArea.setBackground</a> and <a href="PlotArea.setAltBgColor.htm">PlotArea.setAltBgColor</a>.<br><br>
+You can switch the default colors to using a dark background with white lines and text in one step by changing the color palette to a <a href="ChartDirector.whiteOnBlackPalette.htm">whiteOnBlackPalette</a> using <a href="BaseChart.setColors.htm">BaseChart.setColors</a>.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/background_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class BackgroundController &lt; ApplicationController
+
+    def index()
+        @title = "Background and Wallpaper"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 4
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the chart
+        data = [85, 156, 179.5, 211, 123]
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+        # Create a XYChart object of size 270 x 270 pixels
+        c = ChartDirector::XYChart.new(270, 270)
+
+        # Set the plot area at (40, 32) and of size 200 x 200 pixels
+        plotarea = c.setPlotArea(40, 32, 200, 200)
+
+        # Set the background style based on the input parameter
+        if params["img"] == "0"
+            # Has wallpaper image
+            c.setWallpaper(File.dirname(__FILE__) + "/tile.gif")
+        elsif params["img"] == "1"
+            # Use a background image as the plot area background
+            plotarea.setBackground2(File.dirname(__FILE__) + "/bg.png")
+        elsif params["img"] == "2"
+            # Use white (0xffffff) and grey (0xe0e0e0) as two alternate plotarea
+            # background colors
+            plotarea.setBackground(0xffffff, 0xe0e0e0)
+        else
+            # Use a dark background palette
+            c.setColors(ChartDirector::whiteOnBlackPalette)
+        end
+
+        # Set the labels on the x axis
+        c.xAxis().setLabels(labels)
+
+        # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+        # bars.
+        c.addBarLayer3(data).setBorderColor(-1, 1)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/background.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+def createChart(img)
+
+    # The data for the chart
+    data = [85, 156, 179.5, 211, 123]
+    labels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+
+    # Create a XYChart object of size 270 x 270 pixels
+    c = ChartDirector::XYChart.new(270, 270)
+
+    # Set the plot area at (40, 32) and of size 200 x 200 pixels
+    plotarea = c.setPlotArea(40, 32, 200, 200)
+
+    # Set the background style based on the input parameter
+    if img == "0"
+        # Has wallpaper image
+        c.setWallpaper("tile.gif")
+    elsif img == "1"
+        # Use a background image as the plot area background
+        plotarea.setBackground2("bg.png")
+    elsif img == "2"
+        # Use white (0xffffff) and grey (0xe0e0e0) as two alternate plotarea
+        # background colors
+        plotarea.setBackground(0xffffff, 0xe0e0e0)
+    else
+        # Use a dark background palette
+        c.setColors(ChartDirector::whiteOnBlackPalette)
+    end
+
+    # Set the labels on the x axis
+    c.xAxis().setLabels(labels)
+
+    # Add a color bar layer using the given data. Use a 1 pixel 3D border for the
+    # bars.
+    c.addBarLayer3(data).setBorderColor(-1, 1)
+
+    # Output the chart
+    c.makeChart("background%s.png" % img)
+end
+
+createChart("0")
+createChart("1")
+createChart("2")
+createChart("3")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

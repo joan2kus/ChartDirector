@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+<Title>Pie Chart with Legend (1)</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Pie Chart with Legend (1)</p>
+<hr class="separator">
+<div class="content">
+<img src="images/legendpie.png">
+<br><br>
+This example demonstrates how to add a legend box to a pie chart. It also demonstrates alternative sector label format and rounded edge sector shading.<br><br>
+<ul><li> Add a legend box using <a href="BaseChart.addLegend.htm">BaseChart.addLegend</a>.<br><br>
+<li> Change the sector label format using <a href="PieChart.setLabelFormat.htm">PieChart.setLabelFormat</a>.<br><br>
+<li> Set rounded edge sector shading using <a href="PieChart.setSectorStyle.htm">PieChart.setSectorStyle</a>.</ul>
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/legendpie_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class LegendpieController &lt; ApplicationController
+
+    def index()
+        @title = "Pie Chart with Legend (1)"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The data for the pie chart
+        data = [25, 18, 15, 12, 8, 30, 35]
+
+        # The labels for the pie chart
+        labels = ["Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+            "Production"]
+
+        # Create a PieChart object of size 450 x 270 pixels
+        c = ChartDirector::PieChart.new(450, 270)
+
+        # Set the center of the pie at (150, 100) and the radius to 80 pixels
+        c.setPieSize(150, 135, 100)
+
+        # add a legend box where the top left corner is at (330, 50)
+        c.addLegend(330, 60)
+
+        # modify the sector label format to show percentages only
+        c.setLabelFormat("{percent}%")
+
+        # Set the pie data and the pie labels
+        c.setData(data, labels)
+
+        # Use rounded edge shading, with a 1 pixel white (FFFFFF) border
+        c.setSectorStyle(ChartDirector::RoundedEdgeShading, 0xffffff, 1)
+
+        # Output the chart
+        send_data(c.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/legendpie.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The data for the pie chart
+data = [25, 18, 15, 12, 8, 30, 35]
+
+# The labels for the pie chart
+labels = ["Labor", "Licenses", "Taxes", "Legal", "Insurance", "Facilities",
+    "Production"]
+
+# Create a PieChart object of size 450 x 270 pixels
+c = ChartDirector::PieChart.new(450, 270)
+
+# Set the center of the pie at (150, 100) and the radius to 80 pixels
+c.setPieSize(150, 135, 100)
+
+# add a legend box where the top left corner is at (330, 50)
+c.addLegend(330, 60)
+
+# modify the sector label format to show percentages only
+c.setLabelFormat("{percent}%")
+
+# Set the pie data and the pie labels
+c.setData(data, labels)
+
+# Use rounded edge shading, with a 1 pixel white (FFFFFF) border
+c.setSectorStyle(ChartDirector::RoundedEdgeShading, 0xffffff, 1)
+
+# Output the chart
+c.makeChart("legendpie.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>

@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>ChartDirector Ver 5.0 Sample Programs</title>
+</head>
+<frameset rows="19,*" framespacing="0"> 
+    <frame
+        name="indextop" 
+        src="<%= url_for :action => 'indextop' %>" 
+        scrolling="no"
+        frameborder="1"
+    /> 
+    <frameset cols="220,*" framespacing="0"> 
+        <frame 
+            name="indexleft" 
+            src="<%= url_for :action => 'indexleft' %>" 
+            scrolling="auto"
+            frameborder="1"
+        />
+        <frame 
+            name="indexright" 
+            src="<%= url_for :action => 'indexright' %>" 
+            scrolling="auto"
+            frameborder="1"
+        /> 
+    </frameset>
+</frameset>
+</html>

@@ -1,0 +1,26 @@
+<%
+require("chartdirector")
+description = ChartDirector::getDescription()
+version = sprintf("%s.%s.%s", ((ChartDirector::getVersion() & 0xff000000) >> 24), ((ChartDirector::getVersion() & 0xff0000) >> 16), ChartDirector::getVersion() & 0xffff)
+copyright = ChartDirector::getCopyright()
+bootlog = ChartDirector::getBootLog().sub("\n", "<li>")
+libTTFtest = ChartDirector::libgTTFTest().sub("\n", "<li>")
+%>
+<html>
+<body topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<div style="margin:5;">
+<div style="font-family:verdana; font-weight:bold; font-size:18pt;">
+ChartDirector Information
+</div>
+<hr color="#000080">
+<div style="font-family:verdana; font-size:10pt;">
+<ul style="margin-top:0; list-style:square; font-family:verdana; font-size:10pt;">
+<li>Description : <%= description %><br><br>
+<li>Version : <%= version %><br><br>
+<li>Copyright : <%= copyright %><br><br>
+<li>Boot Log : <br><ul><li><%= bootlog %></ul><br>
+<li>Font Loading Test : <br><ul><li><%= libTTFtest %></ul>
+</ul>
+</div>
+</body>
+</html>

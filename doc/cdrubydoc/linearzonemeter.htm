@@ -1,0 +1,138 @@
+<HTML>
+<HEAD>
+<Title>Linear Zone Meter</Title>
+<link type='text/css' rel='Stylesheet' href="maxchartapi.css" />
+</HEAD>
+<body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+
+<p class="heading0">ChartDirector Ver 5.0 (Ruby Edition)</p>
+<p class="heading1">Linear Zone Meter</p>
+<hr class="separator">
+<div class="content">
+<img src="images/linearzonemeter.png">
+<br><br>
+This example demonstrates a linear meter which is labelled with zones.<br><br>
+The above meter is achieved by using <a href="LinearMeter.addZone.htm">LinearMeter.addZone</a> to add labelled zone. The black lines separating the zones are added by using <a href="BaseMeter.addLabel.htm">BaseMeter.addLabel</a> with empty spaces as labels.
+</div>
+<p class="heading1a">Source Code Listing</p>
+<div class="content">
+<b>[Ruby On Rails Version - Controller]</b> app/controllers/linearzonemeter_controller.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>require("chartdirector")
+
+class LinearzonemeterController &lt; ApplicationController
+
+    def index()
+        @title = "Linear Zone Meter"
+        @ctrl_file = File.expand_path(__FILE__)
+        @noOfCharts = 1
+        render :template =&gt; "templates/chartview"
+    end
+
+    #
+    # Render and deliver the chart
+    #
+    def getchart()
+        # The value to display on the meter
+        value = 85
+
+        # Create an LinearMeter object of size 210 x 45 pixels, using silver background
+        # with a 2 pixel black 3D depressed border.
+        m = ChartDirector::LinearMeter.new(210, 45, ChartDirector::silverColor(), 0, -2)
+
+        # Set the scale region top-left corner at (5, 5), with size of 200 x 20 pixels.
+        # The scale labels are located on the bottom (implies horizontal meter)
+        m.setMeter(5, 5, 200, 20, ChartDirector::Bottom)
+
+        # Set meter scale from 0 - 100
+        m.setScale(0, 100)
+
+        # Add a title at the bottom of the meter with a 1 pixel raised 3D border
+        m.addTitle2(ChartDirector::Bottom, "Battery Level", "arialbd.ttf", 8
+            ).setBackground(ChartDirector::Transparent, -1, 1)
+
+        # Set 3 zones of different colors to represent Good/Weak/Bad data ranges
+        m.addZone(50, 100, 0x99ff99, "Good")
+        m.addZone(20, 50, 0xffff66, "Weak")
+        m.addZone(0, 20, 0xffcccc, "Bad")
+
+        # Add empty labels (just need the ticks) at 0/20/50/80 as separators for zones
+        m.addLabel(0, " ")
+        m.addLabel(20, " ")
+        m.addLabel(50, " ")
+        m.addLabel(100, " ")
+
+        # Add a semi-transparent blue (800000ff) pointer at the specified value, using
+        # triangular pointer shape
+        m.addPointer(value, 0x800000ff).setShape(ChartDirector::TriangularPointer)
+
+        # Output the chart
+        send_data(m.makeChart2(ChartDirector::PNG), :type =&gt; "image/png",
+            :disposition =&gt; "inline")
+    end
+
+end</pre></tr></td></table><br><b>[Ruby On Rails Version - View]</b> app/views/templates/chartview.rhtml
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>&lt;html&gt;
+&lt;body style="margin:5px 0px 0px 5px"&gt;
+
+&lt;!-- Title --&gt;
+&lt;div style="font-size:18pt; font-family:verdana; font-weight:bold"&gt;
+    &lt;%= @title %&gt;
+&lt;/div&gt;
+&lt;hr style="border:solid 1px #000080" /&gt;
+
+&lt;!-- Source Code Listing Link --&gt;
+&lt;div style="font-size:9pt; font-family:verdana; margin-bottom:1.5em"&gt;
+    &lt;%= link_to "Source Code Listing", 
+        :controller =&gt; "cddemo", :action =&gt; "viewsource",
+        :ctrl_file =&gt; @ctrl_file, :view_file =&gt; File.expand_path(__FILE__) %&gt;
+&lt;/div&gt;
+
+&lt;!-- Create one or more IMG tags to display the demo chart(s) --&gt;
+&lt;% 0.upto(@noOfCharts - 1) do |i| %&gt;
+    &lt;img src="&lt;%= url_for(:action =&gt; "getchart", :img =&gt; i) %&gt;"&gt;
+&lt;% end %&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</pre></tr></td></table><br><b>[Command Line Version]</b> rubydemo/linearzonemeter.rb
+<table width="98%" border="0" cellpadding="10"><tr><td bgcolor="#cccccc"><pre>#!/usr/bin/env ruby
+require("chartdirector")
+
+# The value to display on the meter
+value = 85
+
+# Create an LinearMeter object of size 210 x 45 pixels, using silver background with
+# a 2 pixel black 3D depressed border.
+m = ChartDirector::LinearMeter.new(210, 45, ChartDirector::silverColor(), 0, -2)
+
+# Set the scale region top-left corner at (5, 5), with size of 200 x 20 pixels. The
+# scale labels are located on the bottom (implies horizontal meter)
+m.setMeter(5, 5, 200, 20, ChartDirector::Bottom)
+
+# Set meter scale from 0 - 100
+m.setScale(0, 100)
+
+# Add a title at the bottom of the meter with a 1 pixel raised 3D border
+m.addTitle2(ChartDirector::Bottom, "Battery Level", "arialbd.ttf", 8).setBackground(
+    ChartDirector::Transparent, -1, 1)
+
+# Set 3 zones of different colors to represent Good/Weak/Bad data ranges
+m.addZone(50, 100, 0x99ff99, "Good")
+m.addZone(20, 50, 0xffff66, "Weak")
+m.addZone(0, 20, 0xffcccc, "Bad")
+
+# Add empty labels (just need the ticks) at 0/20/50/80 as separators for zones
+m.addLabel(0, " ")
+m.addLabel(20, " ")
+m.addLabel(50, " ")
+m.addLabel(100, " ")
+
+# Add a semi-transparent blue (800000ff) pointer at the specified value, using
+# triangular pointer shape
+m.addPointer(value, 0x800000ff).setShape(ChartDirector::TriangularPointer)
+
+# Output the chart
+m.makeChart("linearzonemeter.png")</pre></tr></td></table>
+</div>
+<br><hr class="separator"><div class="copyright">&copy; 2008 Advanced Software Engineering Limited. All rights reserved.</div>
+</body>
+</HTML>
